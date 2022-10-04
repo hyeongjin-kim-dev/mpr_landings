@@ -5,12 +5,12 @@
 <div class="register-box m-auto">
   <div class="card card-outline card-primary">
     <div class="card-header text-center">
-      <a href="../../index2.html" class="h1"><b>회원등록</b></a>
+      <a href="../../index2.html" class="h1"><b>회원가입</b></a>
     </div>
     <div class="card-body">
-      <p class="login-box-msg">회원등록을 진행합니다.</p>
+      <p class="login-box-msg">회원가입을 진행합니다.</p>
 
-      <form id="member_form" name = "member_form" action="/admin/member/insert.php" method="post">
+      <form id="member_form" name = "member_form" action="/admin/login/register/insert.php" method="post">
         <div class="input-group mb-3 d-flex">
           <input type="text" class="form-control" placeholder="ID" id="id" name="id">
           <div class="input-group-append">
@@ -20,7 +20,6 @@
           </div>
           <input type="button" class="btn btn-sm btn-primary btn-block" id="chkbtn" value = "중복여부">
         </div>
-
         <div class="input-group mb-3">
           <input type="password" class="form-control" placeholder="Password" id="pwd" name="pwd">
           <div class="input-group-append">
@@ -29,7 +28,6 @@
             </div>
           </div>
         </div>
-
         <div class="input-group mb-3">
           <input type="password" class="form-control" placeholder="Retype password" id="chkpwd" name="chkPwd">
           <div class="input-group-append">
@@ -38,7 +36,6 @@
             </div>
           </div>
         </div>
-
         <div class="input-group mb-3">
           <input type="text" class="form-control" placeholder="NAME" id="name" name="name">
           <div class="input-group-append">
@@ -47,7 +44,6 @@
             </div>
           </div>
         </div>
-
         <div class="input-group mb-3">
           <input type="text" class="form-control" placeholder="NICKNAME" id="nickName" name="nickName">
           <div class="input-group-append">
@@ -56,7 +52,6 @@
             </div>
           </div>
         </div>
-
         <div class="input-group mb-3">
           <input type="tel" class="form-control" placeholder="PhoneNumber" id="phoneNum" name="phoneNum" oninput="autoHyphen2(this)" maxlength="13">
           <div class="input-group-append">
@@ -65,7 +60,6 @@
             </div>
           </div>
         </div>
-
         <div class="input-group mb-3">
           <input type="tel" class="form-control" placeholder="기타연락처" id="etcNum" name="etcNum">
           <div class="input-group-append">
@@ -74,34 +68,20 @@
             </div>
           </div>
         </div>
-        
         <div class="input-group mb-3">
           <input type="email" class="form-control" placeholder="Email" id="email" name="email">
+          <input type="hidden" class="level" value="100">
+          <input type="hidden" class="approve" value="N">
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-envelope"></span>
             </div>
           </div>
         </div>
-
-        <div class="input-group mb-3">
-          <label><input type="checkbox" id="level" name="level" onclick="doOpenCheck(this)" value="100">&nbsp일반고객&nbsp</label>
-          <label><input type="checkbox" id="level" name="level" onclick="doOpenCheck(this)" value="200">&nbsp관리고객</label>
-        </div>
-
-        <div class="input-group mb-3">
-          <label>승인여부 &nbsp&nbsp</label>
-          <select id="apprve" name="apprve" size="1">
-            <option value="Y">승인</option>
-            <option value="N">비승인</option>
-          </select>
-        </div>
-
           <div class="col-4">
-            <input type="button" class="btn btn-primary btn-block" onclick="checkAll()" id="btn1" value="회원등록">
+            <input type="button" class="btn btn-primary btn-block" onclick="checkAll()" id="btn1" value="회원가입">
           </div>
         </div>
-
       </form>
       </div>
     </div>
@@ -144,10 +124,6 @@
         if(!checkemail(member_form.email.value))
         {
             return false;
-        }
-        if(!checklevel(member_form.level.value))
-        {
-          return false;
         }
         var myform = document.getElementById("member_form");
         document.getElementById("btn1").addEventListener("click",function(){
@@ -313,24 +289,6 @@
         }
         return true;
     }
-    function checklevel(level)
-    {
-      var cnt = $("input:checkbox[name='level']:checked").length;
-      if(cnt<1)
-      {
-        alert("고객 유형을 선택해주세요");
-        return false;
-      }
-      return true;
-    }
-    function doOpenCheck(chk){
-        var obj = document.getElementsByName("level");
-        for(var i=0; i<obj.length; i++){
-            if(obj[i] != chk){
-                obj[i].checked = false;
-            }
-        }
-    }
     $(document).ready(function(){
         $("#chkbtn").click(function(){
             $.ajax({
@@ -343,7 +301,7 @@
                 },
             }); 
         });
-      });
+    });
 </script>
 
 <?php
