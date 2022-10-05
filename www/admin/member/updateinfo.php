@@ -137,7 +137,7 @@
                 url:"/admin/member/updateinfo/update.php",
                 type :"post",
                 data:{id:$("#id").val(),
-                      chgpwd:$("#hiddenpw").val(),
+                      pw:$("#hiddenpw").val(),
                       nick:$("#hiddennick").val(),
                       email:$("#hiddenemail").val(),
                       phonenum:$("#hiddenphone").val(),
@@ -145,10 +145,11 @@
                       level:$("input:checkbox[name='level']:checked").val(),
                       apprve:$("#apprve").val()},
                 dataType :'text',
-                success: function(){
+                success: function(data){
+                  // console.log(data);
                   alert('회원수정 완료');
                   location.replace('/admin/member/');
-                  // console.log($("input:checkbox[name='level']:checked").val());
+                  console.log($("input:checkbox[name='level']:checked").val());
                 },
             }); 
       }

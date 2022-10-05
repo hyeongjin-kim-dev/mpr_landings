@@ -115,7 +115,7 @@
                 url:"/admin/member/updateinfo/update.php",
                 type :"post",
                 data:{id:$("#id").val(),
-                      chgpwd:$("#hiddenpw").val(),
+                      pw:$("#hiddenpw").val(),
                       nick:$("#hiddennick").val(),
                       email:$("#hiddenemail").val(),
                       phonenum:$("#hiddenphone").val(),
@@ -123,7 +123,7 @@
                 dataType :'text',
                 success: function(){
                   alert('회원수정 완료');
-                  console.log($("#hiddenpw").val());
+                  location.replace('/admin/');
                 },
             }); 
       }
@@ -184,10 +184,10 @@
           }
           else
           {
-              if(!checkExist(nickn,"별명"))
+              if(!checkExist(nick,"별명"))
                   return false;
               var kor = /^[가-힣a-zA-Z0-9]{3,}$/;
-              if(!kor.test(nickn))
+              if(!kor.test(nick))
               {
                   alert("별명을 다시 입력해주세요");
                   member_form.nick.value=  "";
@@ -270,9 +270,6 @@
         $("#chkpwd").prop("disabled", false);
       }
       $(document).ready(function(){
-        $("#btn1").click(function(){
-            
-        });
         $("#btn2").click(function(){
             $.ajax({
                 url:"/admin/member/updateinfo/delete.php",

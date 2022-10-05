@@ -85,6 +85,7 @@
                       password:$("#password").val()},
                 dataType :'text',
                 success: function(data){
+                  // console.log(data)
                   if(data==0)
                   {
                     alert("ID 혹은 비밀번호를 잘못 입력하셨습니다.");
