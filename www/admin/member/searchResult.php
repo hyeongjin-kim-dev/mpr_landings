@@ -1,4 +1,5 @@
 <?php
+    ob_start();
     include_once trim($_SERVER['DOCUMENT_ROOT'])."/admin/head.php";
     include_once trim($_SERVER['DOCUMENT_ROOT'])."/include/inc.common.php";
 ?>
@@ -48,7 +49,9 @@
                                             $sql="select user_id, user_nm, user_nick, user_lv, user_mobile, user_email, apprve from mpr_member where del_yn='N' order by reg_Date asc";
                                             $tmp=$DB->query($sql);
                                             $cnt = count($tmp);
-                                           
+
+                                            $category=$_GET["category"];
+                                            $search=$_GET["search"];
                                             $listNum=5;
                                             $pageNum=5;
                                             $totalPage=ceil($cnt/$listNum); // 총 페이지 수
@@ -64,34 +67,35 @@
                                             if($endPageNum>$totalPage){
                                                 $endPageNum=$totalPage;
                                             }; 
-                                            
                                             $start=($page-1)*$listNum;
-                                            $sql2 = "select user_id, user_nm, user_nick, user_lv, user_mobile,user_email, apprve from mpr_member where del_yn='N' order by reg_Date desc limit $start, $listNum";
+                                            $sql2 = "select user_id, user_nm, user_nick, user_lv, user_mobile,user_email, apprve from mpr_member where del_yn='N' and locate('$search',$category) order by reg_Date desc limit $start, $listNum";
                                             $result=$DB->query($sql2);
                                             $max = ($page-1)*$listNum;
-                                            for($i=0; $i < count($result); $i++){
-                                                    $max++;
-                                                    ?>
-                                                    <tr class="odd">
-                                                        <td><?php echo $max; ?></td>
-                                                        <td><a href="/admin/member/updateinfo.php?id=<?php echo $result[$i]['user_id'];?>"><?php echo $result[$i]['user_id'];?></a></td>
-                                                        <td><?php echo $result[$i]['user_nm'];?></td>
-                                                        <td><?php echo $result[$i]['user_nick'];?></td>
-                                                        <td><?php echo $result[$i]['user_lv'];?></td>
-                                                        <td><?php echo $result[$i]['user_mobile'];?></td>
-                                                        <td><?php echo $result[$i]['user_email'];?></td>
-                                                        <td><?php echo $result[$i]['apprve'];?></td>
+                                            // echo "<script>console.log('".$search."');</script>";
+                                            // exit;
+                                            if(!$search or count($result)==0){?>
+                                                <tr class="odd">
+                                                        <td colspan="8" align="center">해당하는 정보가 없습니다.</td>
                                                         <?php echo "<script>console.log('".count($result)."');</script>";?>
-                                                    </tr>
-                                            <?php }?>
+                                                </tr>    
+                                    <?php } else{
+                                                for($i=0; $i < count($result); $i++){
+                                                    $max++;?>
+                                                        <tr class="odd">
+                                                            <td><?php echo $max; ?></td>
+                                                            <td><a href="/admin/member/updateinfo.php?id=<?php echo $result[$i]['user_id'];?>"><?php echo $result[$i]['user_id'];?></a></td>
+                                                            <td><?php echo $result[$i]['user_nm'];?></td>
+                                                            <td><?php echo $result[$i]['user_nick'];?></td>
+                                                            <td><?php echo $result[$i]['user_lv'];?></td>
+                                                            <td><?php echo $result[$i]['user_mobile'];?></td>
+                                                            <td><?php echo $result[$i]['user_email'];?></td>
+                                                            <td><?php echo $result[$i]['apprve'];?></td>
+                                                            <?php echo "<script>console.log('".count($result)."');</script>";?>
+                                                        </tr>
+                                                <?php }
+                                                }?>
+
                                                 </tbody>
-                                                <tfoot>
-                                                    <tr>
-                                                        <td colspan="5">
-                                                            <a class="btn btn-sm btn-primary" href="/admin/member/form.php">신규 등록</a>
-                                                        </td>
-                                                    </tr>
-                                                </tfoot>
                                             </table>
 
                                 </div>
