@@ -21,7 +21,7 @@
           <input type="button" class="btn btn-sm btn-primary btn-block" id="chkbtn" value = "중복여부">
         </div>
         <div class="input-group mb-3">
-          <input type="password" class="form-control" placeholder="Password" id="pwd" name="pwd">
+          <input type="password" class="form-control" placeholder="Password" id="pwd" name="pwd" readonly>
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-lock"></span>
@@ -29,7 +29,7 @@
           </div>
         </div>
         <div class="input-group mb-3">
-          <input type="password" class="form-control" placeholder="Retype password" id="chkpwd" name="chkPwd">
+          <input type="password" class="form-control" placeholder="Retype password" id="chkpwd" name="chkPwd" readonly>
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-lock"></span>
@@ -37,7 +37,7 @@
           </div>
         </div>
         <div class="input-group mb-3">
-          <input type="text" class="form-control" placeholder="NAME" id="name" name="name">
+          <input type="text" class="form-control" placeholder="NAME" id="name" name="name" readonly>
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-user"></span>
@@ -45,7 +45,7 @@
           </div>
         </div>
         <div class="input-group mb-3">
-          <input type="text" class="form-control" placeholder="NICKNAME" id="nickName" name="nickName">
+          <input type="text" class="form-control" placeholder="NICKNAME" id="nickName" name="nickName" readonly>
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-user"></span>
@@ -53,7 +53,7 @@
           </div>
         </div>
         <div class="input-group mb-3">
-          <input type="tel" class="form-control" placeholder="PhoneNumber" id="phoneNum" name="phoneNum" oninput="autoHyphen2(this)" maxlength="13">
+          <input type="tel" class="form-control" placeholder="PhoneNumber" id="phoneNum" name="phoneNum" oninput="autoHyphen2(this)" maxlength="13" readonly>
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fa fa-mobile"></span>
@@ -61,7 +61,7 @@
           </div>
         </div>
         <div class="input-group mb-3">
-          <input type="tel" class="form-control" placeholder="기타연락처" id="etcNum" name="etcNum">
+          <input type="tel" class="form-control" placeholder="기타연락처" id="etcNum" name="etcNum" readonly>
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fa fa-phone"></span>
@@ -69,7 +69,7 @@
           </div>
         </div>
         <div class="input-group mb-3">
-          <input type="email" class="form-control" placeholder="Email" id="email" name="email">
+          <input type="email" class="form-control" placeholder="Email" id="email" name="email" readonly>
           <input type="hidden" class="level" value="100">
           <input type="hidden" class="approve" value="N">
           <div class="input-group-append">
@@ -297,7 +297,15 @@
                 data:{id:$("#id").val()},
                 dataType :'text',
                 success: function(data){
-                    alert(data);
+                    if(data==0)
+                    {
+                      alert("사용가능한 아이디입니다.")
+                      $('input').prop('readonly',false);
+                    }
+                    else
+                    {
+                      alert("아이디가 중복되었습니다.");
+                    }
                 },
             }); 
         });
