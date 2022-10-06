@@ -1,6 +1,12 @@
 <?php
     include_once trim($_SERVER['DOCUMENT_ROOT'])."/admin/head.sub.php";
     // echo "<script>console.log('세션:".$_SESSION['userId']."');</script>";
+    include_once trim($_SERVER['DOCUMENT_ROOT'])."/include/inc.common.php";
+    if($_SESSION['userId'])
+    {
+        echo "<script>location.replace('/admin/');</script>";
+        echo "<script>console.log('457".$_SESSION['userId']."');</script>";
+    }
 ?>
 <body class="hold-transition login-page">
 <div class="login-box m-auto">

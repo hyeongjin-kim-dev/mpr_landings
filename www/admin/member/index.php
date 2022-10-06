@@ -68,9 +68,10 @@
                                             $start=($page-1)*$listNum;
                                             $sql2 = "select user_id, user_nm, user_nick, user_lv, user_mobile,user_email, apprve from mpr_member where del_yn='N' order by reg_Date desc limit $start, $listNum";
                                             $result=$DB->query($sql2);
-                                            $max = ($page-1)*$listNum;
+                                            $max = ($totalPage-($page-1))*$listNum;
+                                            // echo "<script>console.log('".$max."');</script>";
                                             for($i=0; $i < count($result); $i++){
-                                                    $max++;
+                                                    $max--;
                                                     ?>
                                                     <tr class="odd">
                                                         <td><?php echo $max; ?></td>
