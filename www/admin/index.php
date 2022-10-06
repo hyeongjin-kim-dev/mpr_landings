@@ -1,6 +1,6 @@
 <?php
     include_once trim($_SERVER['DOCUMENT_ROOT'])."/admin/head.php";
-    echo "<script>console.log('".$_SESSION['userId']."');</script>";
+    echo "<script>console.log('session:".$_SESSION['userId']."');</script>";
 ?>
 
 <div class="content-wrapper">

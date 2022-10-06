@@ -1,5 +1,6 @@
 <?php
     include_once trim($_SERVER['DOCUMENT_ROOT'])."/admin/head.sub.php";
+    include_once trim($_SERVER['DOCUMENT_ROOT'])."/admin/session.php";
 ?>
 <body class="hold-transition register-page">
 <div class="register-box m-auto">

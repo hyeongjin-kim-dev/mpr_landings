@@ -1,6 +1,6 @@
 <?php
-session_start();
 include_once trim($_SERVER['DOCUMENT_ROOT'])."/admin/head.sub.php";
+include_once trim($_SERVER['DOCUMENT_ROOT'])."/admin/session.php"
 // ↓ navbar 영역
 ?>
 

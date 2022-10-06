@@ -81,7 +81,6 @@
                                                         <td><?php echo $result[$i]['user_mobile'];?></td>
                                                         <td><?php echo $result[$i]['user_email'];?></td>
                                                         <td><?php echo $result[$i]['apprve'];?></td>
-                                                        <?php echo "<script>console.log('".count($result)."');</script>";?>
                                                     </tr>
                                             <?php }?>
                                                 </tbody>

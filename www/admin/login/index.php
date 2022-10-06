@@ -27,18 +27,9 @@
             </div>
           </div>
         </div>
-        <div class="row">
-          <div class="col-8">
-            <div class="icheck-primary">
-              <input type="checkbox" id="remember">
-              <label for="remember">
-                비밀번호 기억
-              </label>
-            </div>
-          </div>
           <!-- /.col -->
-          <div class="col-4">
-            <button type="button" class="btn btn-primary btn-block" id="login">로그인</button>
+          <div class="col-12 text-center">
+            <button type="button" class="btn btn-primary col-12" id="login">로그인</button>
           </div>
           <!-- /.col -->
         </div>
