@@ -40,7 +40,7 @@
                 data:{pw:$("#password").val()},
                 dataType :'text',
                 success: function(data){
-                    if($("#password").val()==data)
+                    if(data==1)
                     {
                         location.replace('/admin/member/updateinfo/updateinfo.php');
                     }

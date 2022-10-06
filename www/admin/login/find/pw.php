@@ -68,7 +68,14 @@
                       email:$("#email").val()},
                 dataType :'text',
                 success: function(data){
-                    alert(data);
+                  if(data==0)
+                  {
+                    alert("이름 혹은 ID, 이메일을 확인해주세요");
+                  }
+                  else
+                  {
+                    alert("임시 비밀번호가 이메일로 발송되었습니다.");
+                  }
                 },
             }); 
         });

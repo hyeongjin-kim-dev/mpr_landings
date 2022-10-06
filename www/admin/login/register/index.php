@@ -18,7 +18,7 @@
               <span class="fa fa-id-badge"></span>
             </div>
           </div>
-          <input type="button" class="btn btn-sm btn-primary btn-block" id="chkbtn" value = "중복여부">
+          <input type="button" class="btn btn-sm btn-primary btn-block" id="chkbtn" value = "중복여부" onclick="checkUserId_tmp(member_form.id.value)">
         </div>
         <div class="input-group mb-3">
           <input type="password" class="form-control" placeholder="Password" id="pwd" name="pwd" readonly>
@@ -155,11 +155,12 @@
         var id_c = /^[A-Za-z]{1}[a-z0-9]{3,12}$/;
         if(!id_c.test(id))
         {
-            alert("영문 소문자, 숫자 4~12로 입력하세요");
+            alert("아이디를 영문 소문자, 숫자 4~12로 입력하세요");
             member_form.id.value="";
             member_form.id.focus();
             return false;
         }
+        
         return true;
     }
 
@@ -173,7 +174,7 @@
 
         if(!pw.test(pw1))
         {
-            alert("영문 대소문자, 숫자 8~20자리 입력하세요");
+            alert("비밀번호를 영문 대소문자, 숫자 8~20자리 입력하세요");
             member_form.pwd.value.value="";
             member_form.pwd.focus();
             return false;
@@ -289,9 +290,19 @@
         }
         return true;
     }
-    $(document).ready(function(){
-        $("#chkbtn").click(function(){
-            $.ajax({
+    function checkUserId_tmp(id){
+        if(!checkExist(id,"아이디"))
+            return false;
+
+        var id_c = /^[A-Za-z]{1}[a-z0-9]{3,12}$/;
+        if(!id_c.test(id))
+        {
+            alert("아이디를 영문 소문자, 숫자 4~12로 입력하세요");
+            member_form.id.value="";
+            member_form.id.focus();
+            return false;
+        }
+        $.ajax({
                 url:"/admin/login/register/check.php",
                 type :"post",
                 data:{id:$("#id").val()},
@@ -308,8 +319,30 @@
                     }
                 },
             }); 
-        });
-    });
+        return true;
+    }
+
+    // $(document).ready(function(){
+    //     $("#chkbtn").click(function(){
+    //         $.ajax({
+    //             url:"/admin/login/register/check.php",
+    //             type :"post",
+    //             data:{id:$("#id").val()},
+    //             dataType :'text',
+    //             success: function(data){
+    //                 if(data==0)
+    //                 {
+    //                   alert("사용가능한 아이디입니다.")
+    //                   $('input').prop('readonly',false);
+    //                 }
+    //                 else
+    //                 {
+    //                   alert("아이디가 중복되었습니다.");
+    //                 }
+    //             },
+    //         }); 
+    //     });
+    // });
 </script>
 
 <?php

@@ -2,6 +2,7 @@
 session_start();
 include_once trim($_SERVER['DOCUMENT_ROOT'])."/admin/common.top.php";
 include_once trim($_SERVER['DOCUMENT_ROOT'])."/config.php";
+
 // if($_SESSION['userId'])
 // {
 //     echo "<script>location.replace('/admin/');</script>";
