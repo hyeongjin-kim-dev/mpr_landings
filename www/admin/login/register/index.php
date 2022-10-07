@@ -19,6 +19,7 @@
             <div class="input-group-text">
               <span class="fa fa-id-badge"></span>
             </div>
+            <span style="color:#ff0000">*</span>
           </div>
           <input type="button" class="btn btn-sm btn-primary btn-block" id="chkbtn" value = "중복여부" onclick="checkUserId_tmp(member_form.id.value)">
           
@@ -29,9 +30,10 @@
             <div class="input-group-text">
               <span class="fas fa-lock"></span>
             </div>
+            <span style="color:#ff0000">*</span>
           </div>
         </div>
-        <p id="p_pwd"></p>
+        <p id="p_pwd" style="color:#ff0000"></p>
 
         <div class="input-group mb-3">
           <input type="password" class="form-control" placeholder="Retype password" id="chkpwd" name="chkPwd" onblur="checkPassword()" disabled required>
@@ -39,9 +41,10 @@
             <div class="input-group-text">
               <span class="fas fa-lock"></span>
             </div>
+            <span style="color:#ff0000">*</span>
           </div>
         </div>
-        <p id="p_chkpwd"></p>
+        <p id="p_chkpwd" style="color:#ff0000"></p>
 
         <div class="input-group mb-3">
           <input type="text" class="form-control" placeholder="NAME" id="name" name="name" onblur="checkName(this.value)" disabled required>
@@ -49,9 +52,10 @@
             <div class="input-group-text">
               <span class="fas fa-user"></span>
             </div>
+            <span style="color:#ff0000">*</span>
           </div>
         </div>
-        <p id="p_name"></p>
+        <p id="p_name" style="color:#ff0000"></p>
 
         <div class="input-group mb-3">
           <input type="text" class="form-control" placeholder="NICKNAME" id="nickName" name="nickName"  onblur="checkNick(this.value)"disabled>
@@ -61,7 +65,7 @@
             </div>
           </div>
         </div>
-        <p id="p_nick"></p>
+        <p id="p_nick" style="color:#ff0000"></p>
 
         <div class="input-group mb-3">
           <input type="tel" class="form-control" placeholder="PhoneNumber" id="phoneNum" name="phoneNum" oninput="autoHyphen2(this)" maxlength="13"  onblur="checkPhone(this.value)" disabled required>
@@ -69,9 +73,10 @@
             <div class="input-group-text">
               <span class="fa fa-mobile"></span>
             </div>
+            <span style="color:#ff0000">*</span>
           </div>
         </div>
-        <p id="p_phone"></p>
+        <p id="p_phone" style="color:#ff0000"></p>
 
         <div class="input-group mb-3">
           <input type="tel" class="form-control" placeholder="기타연락처" id="etcNum" name="etcNum" oninput="autoHyphen2(this)" maxlength="13" onblur="checkEtc(this.value)" disabled>
@@ -81,7 +86,7 @@
             </div>
           </div>
         </div>
-        <p id="p_etc"></p>
+        <p id="p_etc" style="color:#ff0000"></p>
 
         <div class="input-group mb-3">
           <input type="email" class="form-control" placeholder="Email" id="email" name="email" onblur="checkemail(this.value)" disabled required>
@@ -91,9 +96,10 @@
             <div class="input-group-text">
               <span class="fas fa-envelope"></span>
             </div>
+            <span style="color:#ff0000">*</span>
           </div>
         </div>
-        <p id="p_email"></p>
+        <p id="p_email" style="color:#ff0000"></p>
 
           <div class="col-12 d-flex justify-content-between">
             <input type="button" class="btn btn-primary col-5" onclick="checkAll()" id="btn1" value="회원가입" disabled> 
