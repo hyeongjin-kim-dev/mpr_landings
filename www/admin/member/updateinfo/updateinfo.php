@@ -150,7 +150,7 @@
           var pw = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,20}$/;
           if(!pw.test(pw1))
           {
-              alert("영문 대소문자, 숫자 8~20자리 입력하세요");
+              alert("영문 대소문자, 숫자, 특수문자를 포함한 8~20자리 입력하세요");
               member_form.chgpwd.value="";
               member_form.chgpwd.focus();
               return false;

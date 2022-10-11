@@ -20,6 +20,8 @@
     $cnt = count($tmp);
     $category=$_GET["category"];
     $search=$_GET["search"];
+    $sort=$_REQUEST["orderby"];
+    $updown=$_REQUEST["updown"];
     $pageNum=5;
     $totalPage=ceil($cnt/$listNum); // 총 페이지 수
     $totalBlock=ceil($totalPage/$pageNum); // 총 블럭 수
@@ -38,11 +40,29 @@
     $start=($page-1)*$listNum;
     if(!$search)
     {   
-        $sql2 = "select user_id, user_nm, user_nick, user_lv, user_mobile,user_email, apprve from mpr_member where del_yn='N' order by reg_date desc limit $start, $listNum";
+        if(!$sort)
+        {
+            $sql2 = "select user_id, user_nm, user_nick, user_lv, user_mobile,user_email, apprve from mpr_member where del_yn='N' order by reg_date desc limit $start, $listNum";
+        }
+        else
+        {
+            $sql2 = "select user_id, user_nm, user_nick, user_lv, user_mobile,user_email, apprve from mpr_member where del_yn='N' order by $sort $updown limit $start, $listNum";
+        }
+        
     }
     else{
-        $sql_tmp="select user_id, user_nm, user_nick, user_lv, user_mobile, user_email, apprve from mpr_member where del_yn='N' and $category like '%$search%' order by reg_date asc";
-        $sql2 = "select user_id, user_nm, user_nick, user_lv, user_mobile,user_email, apprve from mpr_member where del_yn='N' and $category like '%$search%' order by reg_date desc limit $start, $listNum";
+        if(!$sort)
+        {
+            $sql_tmp="select user_id, user_nm, user_nick, user_lv, user_mobile, user_email, apprve from mpr_member where del_yn='N' and $category like '%$search%' order by reg_date asc";
+            $sql2 = "select user_id, user_nm, user_nick, user_lv, user_mobile,user_email, apprve from mpr_member where del_yn='N' and $category like '%$search%' order by reg_date desc limit $start, $listNum";
+        }
+        else
+        {
+            $sql_tmp="select user_id, user_nm, user_nick, user_lv, user_mobile, user_email, apprve from mpr_member where del_yn='N' and $category like '%$search%' order by $sort $updown";
+            $sql2 = "select user_id, user_nm, user_nick, user_lv, user_mobile,user_email, apprve from mpr_member where del_yn='N' and $category like '%$search%' order by $sort $updown limit $start, $listNum";
+        }
+        // $sql_tmp="select user_id, user_nm, user_nick, user_lv, user_mobile, user_email, apprve from mpr_member where del_yn='N' and $category like '%$search%' order by reg_date asc";
+        // $sql2 = "select user_id, user_nm, user_nick, user_lv, user_mobile,user_email, apprve from mpr_member where del_yn='N' and $category like '%$search%' order by reg_date desc limit $start, $listNum";
         $tmp=$DB->query($sql_tmp);
         $cnt = count($tmp);
         $pageNum=5;
@@ -59,11 +79,11 @@
         if($endPageNum>$totalPage){
             $endPageNum=$totalPage;
         }; 
-        echo "<script>console.log('".$sql_tmp."');</script>";
         $start=($page-1)*$listNum;
     }
     $result=$DB->query($sql2);
-    echo "<script>console.log('".count($result)."');</script>";
+    echo "<script>console.log('1234:".$sort."');</script>";
+    echo "<script>console.log('5678:".$updown."');</script>";
     $max = $cnt-(($page-1)*$listNum)+1;
 ?>
 
@@ -131,7 +151,12 @@
                                                 <th class="sorting sorting_asc" aria-controls="member-list">회원 ID</th>
                                                 <th class="sorting sorting_asc" aria-controls="member-list">이름</th>
                                                 <th class="sorting sorting_asc" aria-controls="member-list">닉네임</th>
-                                                <th class="sorting sorting_asc" aria-controls="member-list">레벨</th>
+                                                <th class="sorting sorting_asc" aria-controls="member-list">레벨
+                                                    <?php if($updown=="asc")
+                                                        {?> <i class="fa-solid fa-caret-down" id="updownImg"></i>
+                                                  <?php } else {?>
+                                                            <i class="fa-solid fa-caret-up" id="updownImg"></i></th>
+                                                  <?php } ?>
                                                 <th class="sorting sorting_asc" aria-controls="member-list">연락처</th>
                                                 <th class="sorting sorting_asc" aria-controls="member-list">이메일</th>
                                                 <th class="sorting sorting_asc" aria-controls="member-list">승인 여부</th>
@@ -201,7 +226,10 @@
                                             if(count($result)==0){?>
                                                 <tr class="odd">
                                                         <td colspan="8" align="center">해당하는 정보가 없습니다.</td>
-                                                        <?php echo "<script>console.log('".count($result)."');</script>";?>
+                                                            <!-- <?php echo "<script>console.log('count:".count($result)."');</script>";?>
+                                                            <?php echo "<script>console.log('search:".$search."');</script>";?>
+                                                            <?php echo "<script>console.log('count search:".count($search)."');</script>";?>
+                                                            <?php echo "<script>console.log('len search:".strlen($search)."');</script>";?> -->
                                                 </tr>    
                                     <?php } else{
                                                 for($i=0; $i < count($result); $i++){
@@ -211,11 +239,14 @@
                                                             <td><a href="/admin/member/updateinfo.php?id=<?php echo $result[$i]['user_id'];?>"><?php echo $result[$i]['user_id'];?></a></td>
                                                             <td><?php echo $result[$i]['user_nm'];?></td>
                                                             <td><?php echo $result[$i]['user_nick'];?></td>
-                                                            <td id="num"><?php echo $result[$i]['user_lv'];?></td>
+                                                            <td id="num" data-name="user_lv"><?php echo $result[$i]['user_lv'];?></td>
                                                             <td><?php echo $result[$i]['user_mobile'];?></td>
                                                             <td><?php echo $result[$i]['user_email'];?></td>
                                                             <td><?php echo $result[$i]['apprve'];?></td>
-                                                            <?php echo "<script>console.log('".count($result)."');</script>";?>
+                                                            <!-- <?php echo "<script>console.log('count:".count($result)."');</script>";?>
+                                                            <?php echo "<script>console.log('search:".$search."');</script>";?>
+                                                            <?php echo "<script>console.log('count search:".count($search)."');</script>";?>
+                                                            <?php echo "<script>console.log('len search:".strlen($search)."');</script>";?> -->
                                                         </tr>
                                                 <?php }
                                                 }?>
@@ -227,7 +258,11 @@
                                                         </td>
                                                     </tr>
                                                 </tfoot>
-                                            </table>
+                                            </table>        
+                                            <form name="form1" id="form1" method="post">
+                                                    <input type="hidden" name="orderby" id="orderby" value="<?php echo $sort?>">
+                                                    <input type="hidden" name="updown" id="updown1" value="<?php echo $updown?>">
+                                            </form>
 
                                 </div>
                             </div>
@@ -243,36 +278,44 @@
                                             <?php if(!$search){
                                                 if($page<=1)
                                                 {?>
-                                                    <li class="paginate_button page-item previous disabled"><a href ="/admin/member/index.php?listnum=<?php echo $listNum?>&page=1" class="page-link">이전</a></li>
+                                                    <li class="paginate_button page-item previous disabled"><a href ="/admin/member/index.php?listnum=<?php echo $listNum?>&orderby=<?php echo $sort?>&updown=<?php echo $updown ?>&page=1" class="page-link">이전</a></li>
                                             <?php } else {?>
-                                                <li class="paginate_button page-item previous "><a href="/admin/member/index.php?listnum=<?php echo $listNum?>&page=<?php echo ($page-1);?>" class="page-link">이전</a></li><?php } ?>
+                                                <li class="paginate_button page-item previous "><a href="/admin/member/index.php?listnum=<?php echo $listNum?>&orderby=<?php echo $sort?>&updown=<?php echo $updown ?>&page=<?php echo ($page-1);?>" class="page-link">이전</a></li><?php } ?>
                                                 <li class="paginate_button page-item active">
                                                     <?php
-                                                    for($printPage = $startPageNum; $printPage <= $endPageNum; $printPage++){?>
-                                                        <li><a href="/admin/member/index.php?listnum=<?php echo $listNum?>&page=<?php echo $printPage; ?>" class="page-link" ><?php echo $printPage;?></a></li>
+                                                    for($printPage = $startPageNum; $printPage <= $endPageNum; $printPage++){
+                                                        if($page==$printPage){?>
+                                                        <li class="paginate_button page-item active"><a href="#" class="page-link" ><?php echo $printPage;?></a></li>
+                                                        <?php } else {?>
+                                                        <li class="paginate_button page-item"><a href="/admin/member/index.php?listnum=<?php echo $listNum?>&orderby=<?php echo $sort?>&updown=<?php echo $updown ?>&page=<?php echo $printPage; ?>" class="page-link" ><?php echo $printPage;?></a></li>
+                                                        <?php }?>
                                                     <?php };?>
                                                 </li>
                                                 <?php if($page >= $totalPage){?>
                                                 <li class="paginate_button page-item next disabled"><a href="/admin/member/index.php?page=<?php echo $totalPage;?>" class="page-link">다음</a></li>
                                             <?php } else{?>
-                                                <li class="paginate_button page-item next"><a href="/admin/member/index.php?listnum=<?php echo $listNum?>&page=<?php echo ($page+1)?>" class="page-link">다음</a></li><?php }?>
+                                                <li class="paginate_button page-item next"><a href="/admin/member/index.php?listnum=<?php echo $listNum?>&orderby=<?php echo $sort?>&updown=<?php echo $updown ?>&page=<?php echo ($page+1)?>" class="page-link">다음</a></li><?php }?>
                                             </li>
                                             <?php } else {
                                                     if($page<=1)
                                                     {?>
-                                                        <li class="paginate_button page-item previous disabled"><a href ="/admin/member/index.php?listnum=<?php echo $listNum?>&category=<?php echo $category ?>&search=<?php echo $search?>&page=1" class="page-link">이전</a></li>
+                                                        <li class="paginate_button page-item previous disabled"><a href ="/admin/member/index.php?listnum=<?php echo $listNum?>&category=<?php echo $category ?>&search=<?php echo $search?>&orderby=<?php echo $sort?>&updown=<?php echo $updown ?>&page=1" class="page-link">이전</a></li>
                                                 <?php } else {?>
-                                                    <li class="paginate_button page-item previous "><a href="/admin/member/index.php?listnum=<?php echo $listNum?>&category=<?php echo $category ?>&search=<?php echo $search?>&page=<?php echo ($page-1);?>" class="page-link">이전</a></li><?php } ?>
+                                                    <li class="paginate_button page-item previous "><a href="/admin/member/index.php?listnum=<?php echo $listNum?>&category=<?php echo $category ?>&search=<?php echo $search?>&orderby=<?php echo $sort?>&updown=<?php echo $updown ?>&page=<?php echo ($page-1);?>" class="page-link">이전</a></li><?php } ?>
                                                     <li class="paginate_button page-item active">
                                                         <?php
-                                                        for($printPage = $startPageNum; $printPage <= $endPageNum; $printPage++){?>
-                                                            <li><a href="/admin/member/index.php?listnum=<?php echo $listNum?>&category=<?php echo $category ?>&search=<?php echo $search?>&page=<?php echo $printPage; ?>" class="page-link" ><?php echo $printPage;?></a></li>
+                                                        for($printPage = $startPageNum; $printPage <= $endPageNum; $printPage++){
+                                                            if($page==$printPage){?>
+                                                            <li class="paginate_button page-item active"><a href="#" class="page-link" ><?php echo $printPage;?></a></li>
+                                                    <?php } else {?>
+                                                            <li class="paginate_button page-item"><a href="/admin/member/index.php?listnum=<?php echo $listNum?>&category=<?php echo $category ?>&search=<?php echo $search?>&orderby=<?php echo $sort?>&updown=<?php echo $updown ?>&page=<?php echo $printPage; ?>" class="page-link" ><?php echo $printPage;?></a></li>
+                                                        <?php } ?>
                                                         <?php };?>
                                                     </li>
                                                     <?php if($page >= $totalPage){?>
-                                                    <li class="paginate_button page-item next disabled"><a href="/admin/member/index.php?listnum=<?php echo $listNum?>&category=<?php echo $category ?>&search=<?php echo $search?>&page=<?php echo $totalPage;?>" class="page-link">다음</a></li>
+                                                    <li class="paginate_button page-item next disabled"><a href="/admin/member/index.php?listnum=<?php echo $listNum?>&category=<?php echo $category ?>&search=<?php echo $search?>&orderby=<?php echo $sort?>&updown=<?php echo $updown ?>&page=<?php echo $totalPage;?>" class="page-link">다음</a></li>
                                                 <?php } else{?>
-                                                    <li class="paginate_button page-item next"><a href="/admin/member/index.php?listnum=<?php echo $listNum?>&category=<?php echo $category ?>&search=<?php echo $search?>&page=<?php echo ($page+1)?>" class="page-link">다음</a></li><?php }?>
+                                                    <li class="paginate_button page-item next"><a href="/admin/member/index.php?listnum=<?php echo $listNum?>&category=<?php echo $category ?>&search=<?php echo $search?>&orderby=<?php echo $sort?>&updown=<?php echo $updown ?>&page=<?php echo ($page+1)?>" class="page-link">다음</a></li><?php }?>
                                             <?php }?>
 
                                     </ul>
@@ -303,4 +346,22 @@
             location.replace("/admin/member/index.php?category=<?php echo $category ?>&search=<?php echo $search?>&listnum="+value);
         }
     }
+    document.getElementById("updownImg").addEventListener("click",function(event){
+        event.preventDefault();
+        var test = document.getElementById("num").dataset.name;
+        var tmp = $('#updown1').val();
+        if(tmp=="desc")
+        {
+            document.getElementById("orderby").value=test;
+            $("#updown1").attr("value","asc");
+        }
+        else
+        {
+            document.getElementById("orderby").value=test;
+            $("#updown1").attr("value","desc");
+        }
+        console.log(tmp);
+        $("#form1").submit();
+    })
+
 </script>
