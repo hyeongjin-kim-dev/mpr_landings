@@ -82,15 +82,17 @@
                                         <option value="N">비승인</option>
                                       </select>
                                     </div>
-                                    <div class="card-footer">
-                                      <button type="button" class="btn btn-primary" onclick="checkAll()" id="btn1">확인</button>
-                                      <button type="button" class="btn btn-primary" id="btn2">회원탈퇴</button>
+                                    <div class="d-flex justify-content-between">
+                                      <div class="d-flex ">
+                                        <button type="button" class="btn btn-danger" id="btn2">회원탈퇴</button>
+                                      </div>
+                                      <div class="d-flex ">        
+                                          <a href="/admin/member/" class="btn btn-default" style="margin-right:5px;">취소</a>
+                                          <button type="button" class="btn btn-primary" onclick="checkAll()" id="btn1">확인</button>
                                     </div>
                                   </form>
                                 </div>
-
                             </div>
-
                         </div>
                     </div>
                 </div>

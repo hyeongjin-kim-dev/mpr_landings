@@ -1,131 +1,106 @@
 <?php
-    include_once trim($_SERVER['DOCUMENT_ROOT'])."/admin/head.sub.php";
-    include_once trim($_SERVER['DOCUMENT_ROOT'])."/admin/session.php";
+    include_once trim($_SERVER['DOCUMENT_ROOT'])."/admin/head.php";
 ?>
-<body class="hold-transition register-page">
-<div class="register-box m-auto">
-  <div class="card card-outline card-primary">
-    <div class="card-header text-center">
-      <a href="../../index2.html" class="h1"><b>회원등록</b></a>
-    </div>
-    <div class="card-body">
-      <p class="login-box-msg">회원등록을 진행합니다.</p>
-
-      <form id="member_form" name = "member_form" action="/admin/member/insert.php" method="post">
-      <div class="input-group mb-3 d-flex">
-          <input type="text" class="form-control" placeholder="ID" id="id" name="id" required>
-          <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fa fa-id-badge"></span>
+<body>
+<div class="content-wrapper">
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>회원등록</h1>
+                </div>
             </div>
-            <span style="color:#ff0000">*</span>
-          </div>
-          <input type="button" class="btn btn-sm btn-primary btn-block" id="chkbtn" value = "중복여부" onclick="checkUserId_tmp(member_form.id.value)">
-          
         </div>
-        <div class="input-group mb-3">
-          <input type="password" class="form-control" placeholder="Password" id="pwd" name="pwd" onblur="checkPassword()" disabled required>
-          <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fas fa-lock"></span>
+    </section>
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="card card-primary">
+                                <form id="member_form" name = "member_form" action="/admin/member/insert.php" method="post">
+                                    <div class="card-body">
+                                      <div class="form-group">
+                                        <label for="inputid">아이디*</label>
+                                        <input type="text" class="form-control" id="id" name="id" placeholder="ID" autofocus required/>
+                                        <input type="button" class="btn btn-sm btn-primary" id="chkbtn" value = "중복여부" onclick="checkUserId_tmp(member_form.id.value)">
+                                      </div>
+
+                                      <div class="form-group">
+                                        <label for="inputpwd">비밀번호*</label>
+                                        <input type="password" class="form-control" placeholder="Password" id="pwd" name="pwd" onblur="checkPassword()" disabled required>
+                                      </div>
+                                      <p id="p_pwd" style="color:#ff0000"></p>
+
+                                      <div class="form-group">
+                                        <label for="inputpwd">비밀번호 확인*</label>
+                                        <input type="password" class="form-control" placeholder="Retype password" id="chkpwd" name="chkPwd" onblur="checkPassword()" disabled required>
+                                      </div>
+                                      <p id="p_chkpwd" style="color:#ff0000"></p>
+
+                                      <div class="form-group">
+                                        <label for="inputname">이름*</label>
+                                        <input type="text" class="form-control" placeholder="NAME" id="name" name="name" onblur="checkName(this.value)" disabled required>
+                                      </div>
+                                      <p id="p_name" style="color:#ff0000"></p>
+
+                                      <div class="form-group">
+                                        <label for="inputnick">닉네임</label>
+                                        <input type="text" class="form-control" placeholder="NICKNAME" id="nickName" name="nickName"  onblur="checkNick(this.value)"disabled>
+                                      </div>
+                                      <p id="p_nick" style="color:#ff0000"></p>
+
+                                      <div class="form-group">
+                                        <label for="inputphone">연락처(전화번호)*</label>
+                                        <input type="tel" class="form-control" placeholder="PhoneNumber" id="phoneNum" name="phoneNum" oninput="autoHyphen2(this)" maxlength="13" onblur="checkPhone(this.value)" disabled required>
+                                      </div>
+                                      <p id="p_phone" style="color:#ff0000"></p>
+
+                                      <div class="form-group">
+                                        <label for="inputetc">기타 연락처</label>
+                                        <input type="tel" class="form-control" placeholder="기타연락처" id="etcNum" name="etcNum" oninput="autoHyphen2(this)" maxlength="13" onblur="checkEtc(this.value)" disabled>
+                                      </div>
+                                      <p id="p_etc" style="color:#ff0000"></p>
+
+
+                                      <div class="form-group">
+                                        <label for="inputemail">이메일*</label>
+                                        <input type="email" class="form-control" placeholder="Email" id="email" name="email" onblur="checkemail(this.value)" disabled required>
+                                      </div>
+                                      <p id="p_email" style="color:#ff0000"></p>
+
+                                      <div class="form-group">
+                                      <label><input type="checkbox" id="level" name="level" onclick="doOpenCheck(this)" value="100">&nbsp일반고객&nbsp</label>
+                                        <label><input type="checkbox" id="level" name="level" onclick="doOpenCheck(this)" value="200">&nbsp관리고객</label>
+                                      </div>
+
+                                      <div class="form-group">
+                                      <label>승인여부 &nbsp&nbsp</label>
+                                        <select id="apprve" name="apprve" size="1">
+                                          <option value="Y">승인</option>
+                                          <option value="N">비승인</option>
+                                        </select>
+                                      </div>
+                                    </div>
+
+                                    <div class="card-footer">
+                                      <button type="button" class="btn btn-primary" onclick="checkAll()" id="btn1">회원등록</button>
+                                      <a href="/admin/member/" class="btn btn-default" style="margin-right:5px;">취소</a>
+                                    </div>
+                                    </div>
+                                  </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <span style="color:#ff0000">*</span>
-          </div>
         </div>
-        <p id="p_pwd" style="color:#ff0000"></p>
-
-        <div class="input-group mb-3">
-          <input type="password" class="form-control" placeholder="Retype password" id="chkpwd" name="chkPwd" onblur="checkPassword()" disabled required>
-          <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fas fa-lock"></span>
-            </div>
-            <span style="color:#ff0000">*</span>
-          </div>
-        </div>
-        <p id="p_chkpwd" style="color:#ff0000"></p>
-
-        <div class="input-group mb-3">
-          <input type="text" class="form-control" placeholder="NAME" id="name" name="name" onblur="checkName(this.value)" disabled required>
-          <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fas fa-user"></span>
-            </div>
-            <span style="color:#ff0000">*</span>
-          </div>
-        </div>
-        <p id="p_name" style="color:#ff0000"></p>
-
-        <div class="input-group mb-3">
-          <input type="text" class="form-control" placeholder="NICKNAME" id="nickName" name="nickName"  onblur="checkNick(this.value)"disabled>
-          <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fas fa-user"></span>
-            </div>
-          </div>
-        </div>
-        <p id="p_nick" style="color:#ff0000"></p>
-
-        <div class="input-group mb-3">
-          <input type="tel" class="form-control" placeholder="PhoneNumber" id="phoneNum" name="phoneNum" oninput="autoHyphen2(this)" maxlength="13"  onblur="checkPhone(this.value)" disabled required>
-          <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fa fa-mobile"></span>
-            </div>
-            <span style="color:#ff0000">*</span>
-          </div>
-        </div>
-        <p id="p_phone" style="color:#ff0000"></p>
-
-        <div class="input-group mb-3">
-          <input type="tel" class="form-control" placeholder="기타연락처" id="etcNum" name="etcNum" oninput="autoHyphen2(this)" maxlength="13" onblur="checkEtc(this.value)" disabled>
-          <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fa fa-phone"></span>
-            </div>
-          </div>
-        </div>
-        <p id="p_etc" style="color:#ff0000"></p>
-
-        <div class="input-group mb-3">
-          <input type="email" class="form-control" placeholder="Email" id="email" name="email" onblur="checkemail(this.value)" disabled required>
-          <input type="hidden" class="level" value="100">
-          <input type="hidden" class="approve" value="N">
-          <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fas fa-envelope"></span>
-            </div>
-            <span style="color:#ff0000">*</span>
-          </div>
-        </div>
-        <p id="p_email" style="color:#ff0000"></p>
-
-        <div class="input-group mb-3">
-          <label><input type="checkbox" id="level" name="level" onclick="doOpenCheck(this)" value="100">&nbsp일반고객&nbsp</label>
-          <label><input type="checkbox" id="level" name="level" onclick="doOpenCheck(this)" value="200">&nbsp관리고객</label>
-        </div>
-
-        <div class="input-group mb-3">
-          <label>승인여부 &nbsp&nbsp</label>
-          <select id="apprve" name="apprve" size="1">
-            <option value="Y">승인</option>
-            <option value="N">비승인</option>
-          </select>
-        </div>
-
-          <div class="col-4">
-            <input type="button" class="btn btn-primary btn-block" onclick="checkAll()" id="btn1" value="회원등록">
-          </div>
-        </div>
-
-      </form>
-      </div>
-    </div>
-  </div>
+    </section>
 </div>
 </body>
-
-
 <script>
     const autoHyphen2 = (target) => {
         target.value = target.value
@@ -217,7 +192,7 @@
         $("#p_pwd").html("");
         if(!pw.test(pw1))
         {
-          checkText="비밀번호를 영문 대소문자, 숫자 8~20자리 입력하세요";
+          checkText="비밀번호를 영문 대소문자, 숫자, 특수문자를 포함한 8~20자리 입력하세요";
           $("#p_pwd").html(checkText);
           setTimeout(function(){
             member_form.pwd.value.value="";

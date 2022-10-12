@@ -18,7 +18,7 @@
     <div class="card-body">
       <form>
         <div class="input-group mb-3">
-          <input type="text" class="form-control" id ="id"placeholder="ID">
+          <input type="text" class="form-control" id ="id"placeholder="ID" autofocus>
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-envelope"></span>
@@ -70,6 +70,12 @@
   }
 
   $(document).ready(function(){
+        $("input").keyup(function(event){
+          if(event.which===13)
+          {
+            $("#login").click();
+          }
+        });
         $("#login").click(function(){
           if(!checkempty($("#id").val(),"아이디"))
             return false;
@@ -99,4 +105,5 @@
             }); 
         });
     });
+  
 </script>

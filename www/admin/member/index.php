@@ -13,7 +13,7 @@
     }
     else
     {
-        $listNum=5;
+        $listNum=10;
     }
     $sql="select user_id, user_nm, user_nick, user_lv, user_mobile, user_email, apprve from mpr_member where del_yn='N' order by reg_Date asc";
     $tmp=$DB->query($sql);
@@ -22,6 +22,7 @@
     $search=$_GET["search"];
     $sort=$_REQUEST["orderby"];
     $updown=$_REQUEST["updown"];
+    $compare=$_REQUEST["compare"];
     $pageNum=5;
     $totalPage=ceil($cnt/$listNum); // 총 페이지 수
     $totalBlock=ceil($totalPage/$pageNum); // 총 블럭 수
@@ -82,8 +83,8 @@
         $start=($page-1)*$listNum;
     }
     $result=$DB->query($sql2);
-    echo "<script>console.log('1234:".$sort."');</script>";
-    echo "<script>console.log('5678:".$updown."');</script>";
+    // echo "<script>console.log('1234:".$sort."');</script>";
+    // echo "<script>console.log('5678:".$compare."');</script>";
     $max = $cnt-(($page-1)*$listNum)+1;
 ?>
 
@@ -116,8 +117,8 @@
                                                     <div style="width: 90px; justify-content:left;">
                                                                     <select class="form-control select2" name="listnum" style="width:100%; height:30px; font-size:small; margin-right: 5px;" onchange="sort(this.value)">
                                                                         <option value="">조회개수</option>
-                                                                        <option value="5">5개</option>
                                                                         <option value="10">10개</option>
+                                                                        <option value="15">15개</option>
                                                                         <option value="20">20개</option>
                                                                     </select>
                                                             </div>
@@ -151,15 +152,26 @@
                                                 <th class="sorting sorting_asc" aria-controls="member-list">회원 ID</th>
                                                 <th class="sorting sorting_asc" aria-controls="member-list">이름</th>
                                                 <th class="sorting sorting_asc" aria-controls="member-list">닉네임</th>
-                                                <th class="sorting sorting_asc" aria-controls="member-list">레벨
-                                                    <?php if($updown=="asc")
+                                                <th class="sorting sorting_asc" aria-controls="member-list" id="num" data-name="user_lv" onclick="updown(this.id)">레벨
+                                                    <?php 
+                                                    if($updown=="asc" and $sort=="user_lv")
                                                         {?> <i class="fa-solid fa-caret-down" id="updownImg"></i>
+                                                  <?php } else if($updown=="desc" and $sort=="user_lv"){?>
+                                                    <i class="fa-solid fa-caret-up" id="updownImg"></i></th>
                                                   <?php } else {?>
-                                                            <i class="fa-solid fa-caret-up" id="updownImg"></i></th>
-                                                  <?php } ?>
+                                                            <i class="fa-solid fa-caret-down" id="updownImg"></i>
+                                                        <?php }?>
                                                 <th class="sorting sorting_asc" aria-controls="member-list">연락처</th>
                                                 <th class="sorting sorting_asc" aria-controls="member-list">이메일</th>
-                                                <th class="sorting sorting_asc" aria-controls="member-list">승인 여부</th>
+                                                <th class="sorting sorting_asc" aria-controls="member-list" id="apprve" data-name="apprve" onclick="updown(this.id)">승인 여부
+                                                <?php 
+                                                    if($updown=="asc" and $sort=="apprve")
+                                                        {?> <i class="fa-solid fa-caret-down" id="updownImg"></i>
+                                                  <?php } else if($updown=="desc" and $sort=="apprve"){?>
+                                                    <i class="fa-solid fa-caret-up " id="updownImg"></i></th>
+                                                  <?php } else {?>
+                                                            <i class="fa-solid fa-caret-down" id="updownImg"></i>
+                                                        <?php }?>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -239,10 +251,12 @@
                                                             <td><a href="/admin/member/updateinfo.php?id=<?php echo $result[$i]['user_id'];?>"><?php echo $result[$i]['user_id'];?></a></td>
                                                             <td><?php echo $result[$i]['user_nm'];?></td>
                                                             <td><?php echo $result[$i]['user_nick'];?></td>
-                                                            <td id="num" data-name="user_lv"><?php echo $result[$i]['user_lv'];?></td>
+                                                            <td><?php if($result[$i]['user_lv']==100){?>일반회원
+                                                            <?php }else {?> 관리자<?php }?></td>
                                                             <td><?php echo $result[$i]['user_mobile'];?></td>
                                                             <td><?php echo $result[$i]['user_email'];?></td>
-                                                            <td><?php echo $result[$i]['apprve'];?></td>
+                                                            <td><?php if($result[$i]['apprve']=="Y"){?>승인
+                                                            <?php }else {?> 비승인 <?php }?></td>
                                                             <!-- <?php echo "<script>console.log('count:".count($result)."');</script>";?>
                                                             <?php echo "<script>console.log('search:".$search."');</script>";?>
                                                             <?php echo "<script>console.log('count search:".count($search)."');</script>";?>
@@ -262,6 +276,7 @@
                                             <form name="form1" id="form1" method="post">
                                                     <input type="hidden" name="orderby" id="orderby" value="<?php echo $sort?>">
                                                     <input type="hidden" name="updown" id="updown1" value="<?php echo $updown?>">
+                                                    <input type="hidden" name="compare" id="compare" value="">
                                             </form>
 
                                 </div>
@@ -346,22 +361,54 @@
             location.replace("/admin/member/index.php?category=<?php echo $category ?>&search=<?php echo $search?>&listnum="+value);
         }
     }
-    document.getElementById("updownImg").addEventListener("click",function(event){
-        event.preventDefault();
-        var test = document.getElementById("num").dataset.name;
+
+    function updown(value)
+    {
+        var test = document.getElementById(value).dataset.name;
         var tmp = $('#updown1').val();
-        if(tmp=="desc")
+        var ex = document.getElementById(value).firstElementChild;
+        var a = document.getElementById("updownImg");
+        if(test==ex.parentElement.dataset.name)
         {
-            document.getElementById("orderby").value=test;
-            $("#updown1").attr("value","asc");
+            if(tmp=="desc")
+            {
+                document.getElementById("orderby").value=test;
+                $("#updown1").attr("value","asc");
+                $("#compare").attr("value",ex.parentElement.dataset.name);
+                ex.setAttribute("class","fa-solid fa-caret-up");
+                // ex.classList.replace("fa-caret-up","fa-caret-down");
+            }
+            else
+            {
+                document.getElementById("orderby").value=test;
+                $("#updown1").attr("value","desc");
+                $("#compare").attr("value",ex.parentElement.dataset.name);
+                ex.setAttribute("class","fa-solid fa-caret-down");
+                // ex.classList.replace("fa-caret-down","fa-caret-up");
+            }
         }
-        else
-        {
-            document.getElementById("orderby").value=test;
-            $("#updown1").attr("value","desc");
-        }
-        console.log(tmp);
+        console.log("1번값:" + ex.parentElement.dataset.name);
+        console.log("2번값:" + a.parentElement.dataset.name);
+        console.log("3번값:" + test);
+        console.log(ex);
         $("#form1").submit();
-    })
+    }
+    // document.getElementById("updownImg").addEventListener("click",function(event){
+    //     event.preventDefault();
+    //     var test = document.getElementById("num").dataset.name;
+    //     var tmp = $('#updown1').val();
+    //     if(tmp=="desc")
+    //     {
+    //         document.getElementById("orderby").value=test;
+    //         $("#updown1").attr("value","asc");
+    //     }
+    //     else
+    //     {
+    //         document.getElementById("orderby").value=test;
+    //         $("#updown1").attr("value","desc");
+    //     }
+    //     console.log(tmp);
+    //     $("#form1").submit();
+    // })
 
 </script>

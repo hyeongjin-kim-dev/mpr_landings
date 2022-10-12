@@ -1,18 +1,21 @@
 <?php
 include_once trim($_SERVER['DOCUMENT_ROOT'])."/admin/head.sub.php";
-include_once trim($_SERVER['DOCUMENT_ROOT'])."/admin/session.php";
-// if($_SESSION['userId'])
-// {
-//     echo "<script>location.replace('/admin/');</script>";
-//     exit;
-// 	echo "<script>console.log('123".$_SESSION['userId']."');</script>";
-// }
-// else
-// {
-//     echo "<script>location.replace('/admin/login/');</script>";
-//     exit;
-// 	echo "<script>console.log('457".$_SESSION['userId']."');</script>";
-// }
+// include_once trim($_SERVER['DOCUMENT_ROOT'])."/admin/session.php";
+// echo "<script>console.log('".$_SESSION['userId']."');</script>";
+
+
+if($_SESSION['userId'])
+{
+    echo "<script>location.replace('/admin/');</script>";
+    exit;
+	echo "<script>console.log('123".$_SESSION['userId']."');</script>";
+}
+else
+{
+    echo "<script>location.replace('/admin/login/');</script>";
+    exit;
+	echo "<script>console.log('457".$_SESSION['userId']."');</script>";
+}
 ?>
 
 <!doctype html>

@@ -5,4 +5,8 @@
         echo "<script>location.replace('/admin/login/');</script>";
         echo "<script>console.log('457".$_SESSION['userId']."');</script>";
     }
+    // else
+    // {
+    //     echo "<script>location.replace('/admin/member/');</script>";
+    // }
 ?>
