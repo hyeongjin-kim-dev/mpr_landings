@@ -7,33 +7,54 @@
 <!-- Automatic element centering -->
 <div class="lockscreen-wrapper">
   <div class="lockscreen-logo">
-    <a href="../../index2.html"><b>회원정보변경</b></a>
+    <b>회원정보변경</b>
   </div>
   <!-- User name -->
   <div class="lockscreen-name" align="center">비밀번호를 입력해주세요</div>
         <!-- START LOCK SCREEN ITEM -->
         <div class="lockscreen-item">
-            <form class="lockscreen-credentials">
+            <div class="lockscreen-credentials">
                 <div class="input-group">
-                    <input type="password" class="form-control" id="password" placeholder="password">
+                <input type="password" class="form-control" id="password" placeholder="Password" autofocus>
                     <div class="input-group-append">
                         <button type="button" class="btn" id="enterbtn">
                         <!-- "location.replace('/admin/member/updateinfo.php')" -->
-                            <i class="fas fa-arrow-right text-muted"></i>
+                            <span class="fas fa-arrow-right text-muted"></span>
                         </button>
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
+</div>
 </body>
 <?php
     include_once trim($_SERVER['DOCUMENT_ROOT'])."/admin/tail.php";
 ?>
 
 <script>
-   $(document).ready(function(){
+    function checkempty(value,data)
+    {
+        if(value == "")
+            {
+                alert(data +" 입력하시오");
+                return false;
+            }
+            return true;
+    }
+    $(document).ready(function(){
+        $("input").keyup(function(event){
+          if(event.which===13)
+          {
+            $("#enterbtn").click();
+          }
+          else(
+            console.log("13")
+          )
+        });
         $("#enterbtn").click(function(){
+            if(!checkempty($("#password").val(),"비밀번호"))
+                return false;
             $.ajax({
                 url:"/admin/member/updateinfo/checkpw.php",
                 type :"post",
