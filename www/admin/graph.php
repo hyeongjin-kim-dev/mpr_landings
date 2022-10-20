@@ -1,16 +1,20 @@
 <?php
     include_once trim($_SERVER['DOCUMENT_ROOT'])."/include/inc.common.php";
+    session_start();
     $time = $_POST['time'];
     $date = $_POST['date'];
     $type = $_POST['g_type'];
-    if($type=="curve_line")
+    $code = $_POST['code'];
+
+    
+    if($type=="curve")
     {
-      $sql_column="select a.*,ifnull(b.cnt,0)as cnt from
+      $sql="select a.*,ifnull(b.cnt,0)as cnt from
       (select @curDate := date_sub(@curDate, interval 1 day) as dates from mpr_event_db inner join (select @curDate := $time) A where @curDate > date_add($time, interval -1 week)ORDER by dates asc) a 
           left join (select *, DATE_FORMAT(regdate,'%Y-%m-%d')as now,count(regdate)as cnt from mpr_event_db b GROUP by now)b
             on a.dates = b.now";
                           
-      $column=$DB->query($sql_column);
+      $result=$DB->query($sql);
       // print_r($column);
       // echo "<script>console.log('컬럼명:".$column[0]['year']."');</script>";
       // echo "<script>console.log('컬럼명:".$column[0]['br_code']."');</script>";
@@ -18,9 +22,9 @@
       // $label_1 = array();
       // $label_2 = array();
       // $data_1 = array();
-      echo json_encode($column);
+      echo json_encode($result);
     }
-    if($type=="bar")
+    if($type=="column")
     {
       $sql="select b.ev_subject,a.dates,a.cnt from
       (select br_key,date_format(regdate,'%Y-%m-%d')as dates,count(br_key) as cnt from mpr_event_db where date_format(regdate,'%Y-%m-%d')='$date' group by br_key)a 
@@ -56,19 +60,27 @@
       $result=$DB->query($sql);
       echo json_encode($result);
     }
-
-    if($type=="stackbar")
+    else
     {
-      $sql="select tmp.dates, tmp.ev_subject,tmp.cnt,if(tmp.ev_subject is null,tmp.rank=0,tmp.rank)as rank from
-      (select a.dates, b.ev_subject,ifnull(b.cnt,0) as cnt,dense_rank() over(PARTITION by a.dates order by b.cnt desc)as rank from
-      (select @curDate := date_sub(@curDate, interval 1 day) as dates from mpr_event_db inner join (select @curDate := $time) A where @curDate > date_add($time, interval -1 week)ORDER by dates asc)a
-      left outer join
-      (select b.ev_subject,a.dates, a.cnt from
-            (select br_key,date_format(regdate,'%Y-%m-%d')as dates, count(br_key) as cnt from mpr_event_db group by br_key,dates)a 
-              left outer join (select ev_subject, ev_key from mpr_event group by ev_key)b on a.br_key = b.ev_key)b on a.dates=b.dates)tmp where tmp.rank<=3";
-      $result=$DB->query($sql);
-      echo json_encode($result);
+      $_SESSION['code']=$code;
+      echo $_SESSION['code'];
     }
+
+
+
+    
+    // if($type=="stackbar")
+    // {
+    //   $sql="select tmp.dates, tmp.ev_subject,tmp.cnt,if(tmp.ev_subject is null,tmp.rank=0,tmp.rank)as rank from
+    //   (select a.dates, b.ev_subject,ifnull(b.cnt,0) as cnt,dense_rank() over(PARTITION by a.dates order by b.cnt desc)as rank from
+    //   (select @curDate := date_sub(@curDate, interval 1 day) as dates from mpr_event_db inner join (select @curDate := $time) A where @curDate > date_add($time, interval -1 week)ORDER by dates asc)a
+    //   left outer join
+    //   (select b.ev_subject,a.dates, a.cnt from
+    //         (select br_key,date_format(regdate,'%Y-%m-%d')as dates, count(br_key) as cnt from mpr_event_db group by br_key,dates)a 
+    //           left outer join (select ev_subject, ev_key from mpr_event group by ev_key)b on a.br_key = b.ev_key)b on a.dates=b.dates)tmp where tmp.rank<=3";
+    //   $result=$DB->query($sql);
+    //   echo json_encode($result);
+    // }
     // 2022-10-13  lfsd2 1
     // 2022-10-14  lfsd2 2
     // 2022-10-15  2dc22 1

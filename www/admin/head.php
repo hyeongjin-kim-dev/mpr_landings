@@ -65,7 +65,7 @@ include_once trim($_SERVER['DOCUMENT_ROOT'])."/admin/session.php"
                             <p>업체 목록</p>
                         </a>
                     </li>
-                    <?php if($_SESSION['lvl']==200){?>
+                    <?php if($_SESSION['lvl']==300){?>
                     <li class="nav-item">
                         <a href="/admin/member/" class="nav-link">
                             <i class="fa-solid fa-list-ul"></i>
