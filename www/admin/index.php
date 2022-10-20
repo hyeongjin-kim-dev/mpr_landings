@@ -28,15 +28,13 @@
                 </h3>
               </div>
               <div class="card-body">
-                <div class="chart">
-                    <canvas id="barChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-                    <canvas id="barChart2" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-                  </div>
               </div>
             </div>
           </div>
         </div>
-        
+
+
+        <div class="row">
           <div class="col-md-6">
             <!-- Bar chart -->
             <div class="card card-primary card-outline">
@@ -48,14 +46,16 @@
               </div>
               <div class="card-body">
                 <div class="chart">
-                    <canvas id="lineChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-                  </div>
+                    <div id="curve_chart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></div>
+                </div>
               </div>
               <!-- /.card-body-->
             </div>
             <!-- /.card -->
+          </div>
 
             <!-- Donut chart -->
+          <div class="col-md-6">
             <div class="card card-primary card-outline">
               <div class="card-header">
                 <h3 class="card-title">
@@ -75,22 +75,50 @@
               <div class="card-body">
                 <table>
                   <tr>
-                    <td><div id="piechart_div" style="border: 1px solid #ccc"></div></td>
-                    <td><div id="barchart_div" style="border: 1px solid #ccc"></div></td>
+                    <td><div id="piechart_div" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></div></td>
+                    <td><div id="barchart_div" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></div></td>
                   </tr>
                 </table>
               </div>
               <!-- /.card-body-->
             </div>
-            <!-- /.card -->
           </div>
-          <!-- /.col -->
         </div>
-        <!-- /.row -->
+        <div class="row">
+            <div class="col-md-6">
+              <div class="card card-primary card-outline">
+                <div class="card-header">
+                  <h3 class="card-title">
+                    <i class="far fa-chart-bar"></i>
+                    주간 누적 상위(3개)이벤트 데이터
+                  </h3>
+                </div>
+                <div class="card-body">
+                  <div class="chart">
+                    <div id="lineChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card card-primary card-outline">
+                <div class="card-header">
+                  <h3 class="card-title">
+                    <i class="far fa-chart-bar"></i>
+                    일간 상위 데이터("2022-10-18" 기준)
+                  </h3>
+                </div>
+                <div class="card-body">
+                  <div class="chart">
+                  <canvas id="barChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
       </div><!-- /.container-fluid -->
     </section>
-    <!-- /.content -->
-  </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
 <script src="https://cdn.jsdelivr.net/jquery.flot/0.8.3/jquery.flot.min.js"></script>
@@ -104,70 +132,49 @@ window.onload = function(){
   var month = ("0" + (1 + date.getMonth())).slice(-2);
   var day = ("0" + date.getDate()).slice(-2);
   var now = year + month + day;
-  var asd="2022-10-12";
+  var asd="2022-10-18";
   $.ajax({
             url:"/admin/graph.php",
             type :"post",
             data:{time:now,
-                  g_type: "line",
-                date:asd},
+                  g_type: "curve_line",
+                },
             dataType :'json',
               success: function(data){
-                  console.log(data);
+                  // console.log(data);
                   var tmp = []
                   var tmp_data = []
                   for(var i=0; i<data.length;i++)
                   {
-                    tmp.push(data[i]['dates']);
                     tmp_data.push(data[i]['cnt']);
                   }
-                  var Data = {
-                  labels  : tmp,
-                  datasets: [
-                    {
-                      label : "일자별 개수",
-                      backgroundColor     : 'rgba(60,141,188,0.9)',
-                      borderColor         : 'rgba(60,141,188,0.8)',
-                      pointRadius         :  false,
-                      pointColor          : '#3b8bba',
-                      pointStrokeColor    : 'rgba(60,141,188,1)',
-                      pointHighlightFill  : '#fff',
-                      pointHighlightStroke: 'rgba(60,141,188,1)',
-                      data                : [10,22,34,15,25,16,28]
-                    }
-                  ]
-                }
-                var areaChartOptions = {
-                  maintainAspectRatio : false,
-                  responsive : true,
-                  legend: {
-                    display: false
-                  },
-                  scales: {
-                    xAxes: [{
-                      gridLines : {
-                        display : false,
-                      }
-                    }],
-                    yAxes: [{
-                      gridLines : {
-                        display : false,
-                      }
-                    }]
+                  const result = tmp_data.reduce(function add(sum, currValue) {
+                    return sum + currValue;
+                  }, 0);
+                  const avg=result/tmp_data.length;
+                  for(var i=0; i<data.length;i++)
+                  {
+                    tmp.push([data[i]['dates'],data[i]['cnt'],avg]);
                   }
-                }
-                // Data.datasets[0]['data']=tmp_data;
-                var lineChartCanvas = $('#lineChart').get(0).getContext('2d')
-                var lineChartOptions = $.extend(true, {}, areaChartOptions)
-                var lineChartData = $.extend(true, {}, Data)
-                lineChartData.datasets[0].fill = false;
-                lineChartOptions.datasetFill = false
+                  // console.log(tmp[0]);
+                  google.charts.load('current', {'packages':['corechart']});
+                  google.charts.setOnLoadCallback(drawChart);
 
-                var lineChart = new Chart(lineChartCanvas, {
-                  type: 'line',
-                  data: lineChartData,
-                  options: lineChartOptions
-                })
+                  function drawChart() {
+                    var data = new google.visualization.DataTable();
+                    data.addColumn('string','날짜');
+                    data.addColumn('number','갯수');
+                    data.addColumn('number','평균')
+                    data.addRows(tmp);
+                    var options = {
+                      // curveType: 'function',
+                      legend: { position: 'bottom' }
+                    };
+
+                    var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+                    chart.draw(data, options);
+                  }
               },
           });
           
@@ -183,7 +190,7 @@ window.onload = function(){
                   var tmp_data=[]
                   for(var i=0; i<data.length; i++)
                   {
-                    tmp.push(data[i]['br_code']);
+                    tmp.push(data[i]['ev_subject']);
                     tmp_data.push([data[i]['cnt']]);
                   }
                   var Data = {
@@ -206,8 +213,8 @@ window.onload = function(){
                 // console.log(Math.max(Data.datasets[0]['data']))\
                 var max = Math.max.apply(null,Data.datasets[0]['data']);
                 var min = Math.min.apply(null,Data.datasets[0]['data']);
-                console.log("최댓값" + max)
-                console.log("최솟값" + min)
+                // console.log("최댓값" + max)
+                // console.log("최솟값" + min)
                 var barChartCanvas = $('#barChart').get(0).getContext('2d')
                 var barChartData = $.extend(true, {}, Data)
 
@@ -257,7 +264,7 @@ window.onload = function(){
 
                     var piechart_options = {title:'이벤트: TwTwiN(임시 고정값)',
                        width:380,
-                       height:300};
+                       height:270};
                     var piechart = new google.visualization.PieChart(document.getElementById('piechart_div'));
                     piechart.draw(data, piechart_options);
                     }
@@ -270,13 +277,13 @@ window.onload = function(){
                   g_type:"rev_bar"},
             dataType :'json',
               success: function(data){
-                console.log(data);
+                // console.log(data);
                   var tmp=[]
                   for(var i=0; i<data.length; i++)
                   {
                     tmp.push([data[i]['age_range'],data[i]['cnt']]);
                   }
-                  console.log(tmp);
+                  // console.log(tmp);
                   google.charts.load('current', {'packages':['corechart']});
                   google.charts.setOnLoadCallback(drawChart);
                   function drawChart() {
@@ -291,10 +298,57 @@ window.onload = function(){
 
                     var barchart_options = {title:'이벤트: TwTwiN(임시 고정값)',
                        width:380,
-                       height:300,
+                       height:270,
                        legend: 'none'};
                     var barchart = new google.visualization.BarChart(document.getElementById('barchart_div'));
                     barchart.draw(data, barchart_options);
+                    }
+              },
+          });
+          $.ajax({
+            url:"/admin/graph.php",
+            type :"post",
+            data:{time:now,
+                  g_type:"stackbar"},
+            dataType :'json',
+              success: function(data){
+                // console.log(data);
+                  var t_tmp=[] // 임시 깡통
+                  var tmp=[] // 날짜 삽입
+                  var a=[] // 이벤트 명
+                  var b=[11,22,33,21,36,17,30] // 이벤트 갯수
+                  for(var i=0; i<data.length; i++)
+                  { 
+                    if(!t_tmp.includes(data[i]['dates'])) t_tmp.push(data[i]['dates'])
+                    if(!a.includes(data[i]['br_code'])&&data[i]['br_key'] !=null) a.push(data[i]['br_key'])
+                  }
+                  for(var j=0; j<t_tmp.length; j++)
+                  {
+                    tmp.push([t_tmp[j],1,2,1,4,1,6])
+                  }
+
+                  // console.log(tmp);
+                  google.charts.load('current', {'packages':['corechart']});
+                  google.charts.setOnLoadCallback(drawChart);
+                  function drawChart() {
+                    var data = new google.visualization.DataTable();
+                    data.addColumn('string','event');
+                    for(var i=0; i<a.length; i++)
+                    {
+                      data.addColumn('number',a[i]);
+                    }
+                    // data.addRows(tmp);
+
+                    var options = {
+                      width: 600,
+                      height: 300,
+                      legend: { position: 'top', maxLines: 3 },
+                      bar: { groupWidth: '75%' },
+                      isStacked: true
+                    };
+
+                    var linechart = new google.visualization.BarChart(document.getElementById('lineChart'));
+                    linechart.draw(data, options);
                     }
               },
           });
