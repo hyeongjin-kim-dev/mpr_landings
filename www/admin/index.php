@@ -52,29 +52,9 @@
     <section class="content">
       <div class="container-fluid">
         <div class="row">
-          <div class="col-12">
+          <!-- <div class="col-12"  id="divtest"> -->
+            <div class="col-12">
             <!-- interactive chart -->
-            <div class="card card-primary card-outline">
-                <div class="card-header">
-                  <h3 class="card-title">
-                    <i class="far fa-chart-bar"></i>
-                    일간 상위 데이터("2022-10-18" 기준)
-                    <input type="date">
-                  </h3>
-                </div>
-                <div class="card-body">
-                  <div class="chart">
-                    <div id="columnchart" data-id="chart" data-type="column" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></div>
-                  </div>
-                </div>
-              </div>
-          </div>
-        </div>
-
-
-        <div class="row">
-          <div class="col-md-6">
-            <!-- Bar chart -->
             <div class="card card-primary card-outline">
               <div class="card-header">
                 <h3 class="card-title">
@@ -89,11 +69,35 @@
               </div>
               <!-- /.card-body-->
             </div>
+          </div>
+        </div>
+
+
+        <div class="row">
+          <div class="col-md-6" id="divtest">
+            <!-- Bar chart -->
+            <div class="card card-primary card-outline">
+                <div class="card-header">
+                      <h3 class="card-title">
+                        <i class="far fa-chart-bar"></i>
+                        일간 상위 데이터("<span id="span_date">2022-10-18</span>" 기준)
+                        <input type="date" id= "date">
+                            <button class="btn btn-navbar date_search" type="button" onclick="chgdate()">
+                              <i class="fas fa-search"></i>
+                            </button>
+                      </h3>
+                </div>
+                <div class="card-body">
+                  <div class="chart">
+                    <div id="columnchart" data-id="chart" data-type="column" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></div>
+                  </div>
+                </div>
+              </div>
             <!-- /.card -->
           </div>
 
             <!-- Donut chart -->
-          <div class="col-md-6">
+          <div class="col-md-6" id="disap">
             <div class="card card-primary card-outline">
               <div class="card-header">
                 <h3 class="card-title">
@@ -155,6 +159,69 @@
 var code=$('#searchinput').val().trim();
   code=$('#branch_name [value="'+code+'"]').data('value');
 
+function chgdate()
+{
+  var day = document.getElementById('date').value;
+  $("#span_date").text(day);
+  $.ajax({
+          url:"/admin/graph.php",
+          type :"post",
+          data:{g_type:'column',
+                date: day},
+          dataType :'json',
+          success: function(data)
+          {
+            // if(data.length<5)
+            // {
+            //   $("#divtest").attr('class','col-6')
+            // }
+            // else
+            // {
+            //   $("#divtest").attr('class','col-12')
+            // }
+            var tmp=[]
+            var tmp_data=[]
+            for(var i=0; i<data.length; i++)
+            {
+              tmp.push([data[i]['ev_subject'],data[i]['cnt']]);
+            }
+            google.charts.load("current", {packages:['corechart']});
+            google.charts.setOnLoadCallback(drawChart);
+            function drawChart(){
+               var data_C = new google.visualization.DataTable();
+               data_C.addColumn('string',"이벤트명");
+               data_C.addColumn('number','이벤트 수');
+               data_C.addRows(tmp);
+               var options = {
+               bar: {groupWidth: "50"},
+               legend: { position: "none" },
+               };
+               var columnchart = new google.visualization.ColumnChart(document.getElementById('columnchart'));
+               columnchart.draw(data_C, options);
+               
+               var selectHandler=function(){
+                  var selectitem= columnchart.getSelection()[0];
+                  var value=data_C.getValue(selectitem.row,0);
+                  var key=""
+                  for(var i=0; i<data.length;i++)
+                  {
+                    if(data[i]['ev_subject']==value)
+                    {
+                      tttt=data[i]['br_key'];
+                    }
+                  }
+                  console.log(key);
+                  
+               }
+               google.visualization.events.addListener(columnchart, 'select', selectHandler);
+                                 
+            }
+          }
+  });
+}
+
+
+
 function gogo()
 {
   var code=$('#searchinput').val().trim();
@@ -176,15 +243,19 @@ var test= document.querySelectorAll('div[data-id="chart"]')
 for(var j=0; j<test.length;j++)
 {
   call(test[j].dataset.type);
-  // console.log(j+test[j].dataset.type);  
 }
+
 function call(type){
-    var date = new Date();
+      // $("#disap").hide();
+      // $("#divtest").attr('class','col-12')
+      var date = new Date();
       var year = date.getFullYear();
       var month = ("0" + (1 + date.getMonth())).slice(-2);
       var day = ("0" + date.getDate()).slice(-2);
       var now = year + month + day;
-      var asd="2022-10-18";
+      document.getElementById('date').valueAsDate=new Date();
+      $("#span_date").text(document.getElementById('date').value);
+      var asd= document.getElementById('date').value;
       $.ajax({
               url:"/admin/graph.php",
               type :"post",
@@ -283,26 +354,51 @@ function call(type){
                     }
                     if(type=="column")
                     {
+                      // if(data.length<5)
+                      // {
+                      //   $("#divtest").attr('class','col-6')
+                      // }
+                      // else
+                      // {
+                      //   $("#divtest").attr('class','col-12')
+                      // }
                       var tmp=[]
                       var tmp_data=[]
                       for(var i=0; i<data.length; i++)
                       {
                         tmp.push([data[i]['ev_subject'],data[i]['cnt']]);
                       }
-                      google.charts.load("current", {packages:['corechart']});
+                      google.charts.load("visualization", "1.1", {packages:['corechart']});
                       google.charts.setOnLoadCallback(drawChart);
                       function drawChart(){
-                        var data = new google.visualization.DataTable();
-                        data.addColumn('string',"이벤트명");
-                        data.addColumn('number','이벤트 수');
-                        data.addRows(tmp);
+                        var data_C = new google.visualization.DataTable();
+                        data_C.addColumn('string',"이벤트명");
+                        data_C.addColumn('number','이벤트 수');
+                        data_C.addRows(tmp);
 
                         var options = {
-                        bar: {groupWidth: "95%"},
+                        bar: {groupWidth: "50"},
                         legend: { position: "none" },
                         };
                         var columnchart = new google.visualization.ColumnChart(document.getElementById('columnchart'));
-                        columnchart.draw(data, options);                  
+                        columnchart.draw(data_C, options);
+
+                        var selectHandler=function(){
+                          // $("#divtest").attr('class','col-6');
+                          // $("#disap").show();
+                        var selectitem= columnchart.getSelection()[0];
+                        var value=data_C.getValue(selectitem.row,0);
+                        var key=""
+                        for(var i=0; i<data.length;i++)
+                        {
+                          if(data[i]['ev_subject']==value)
+                          {
+                            key=data[i]['br_key'];
+                          }
+                        }
+                        console.log(key);
+                        }
+                        google.visualization.events.addListener(columnchart, 'select', selectHandler);              
                       }
                     }
                 }

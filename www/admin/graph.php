@@ -5,6 +5,7 @@
     $date = $_POST['date'];
     $type = $_POST['g_type'];
     $code = $_POST['code'];
+    $key= $_POST['key'];
 
     
     if($type=="curve")
@@ -26,7 +27,7 @@
     }
     if($type=="column")
     {
-      $sql="select b.ev_subject,a.dates,a.cnt from
+      $sql="select b.ev_subject,a.dates,a.cnt,a.br_key from
       (select br_key,date_format(regdate,'%Y-%m-%d')as dates,count(br_key) as cnt from mpr_event_db where date_format(regdate,'%Y-%m-%d')='$date' group by br_key)a 
         left outer join (select ev_subject, ev_key from mpr_event group by ev_key)b on a.br_key = b.ev_key";
       $result=$DB->query($sql);
