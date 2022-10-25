@@ -35,7 +35,7 @@
   <link rel="stylesheet" href="./css/common.css?v=220823">
   <link rel="stylesheet" href="./css/style.css?v=220823">
 
-  <meta name="facebook-domain-verification" content="fo5rqx0o5zdz9oxudc4s1u4e4ez2jc" />
+  <meta name="facebook-domain-verification" content="afsb8abqrg5g2cbxk05then9gba5sx" />
 </head>
 
 <body>

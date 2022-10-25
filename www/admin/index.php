@@ -16,7 +16,7 @@
       // echo "<script>console.log('".$result[$j]."');</script>";
   //   // }
   //  print_r($result_r);
-  echo "<script>console.log('123".$_SESSION['code']."');</script>";
+  // echo "<script>console.log('섹션".$_SESSION['code']."');</script>";
 ?>
 <?php if($_SESSION['lvl']==300) {?>
 <div class="content-wrapper">
@@ -98,9 +98,9 @@
           <div class="col-md-6" id="disap">
             <div class="card card-primary card-outline">
               <div class="card-header">
-                <h3 class="card-title">
+                <h3 class="card-title" id="title">
                   <i class="far fa-chart-bar"></i>
-                  이벤트 별 성별 비율 데이터 및 연령대 데이터("<span id='add_date'></span>")
+                  전날 가장 많았던 이벤트 별 성별 비율 데이터 및 연령대 데이터("<span id='add_date'></span>")
                 </h3>
 
                 <div class="card-tools">
@@ -248,15 +248,17 @@ console.log("<?php echo $_SESSION['code'];?> ");
 function chgdate()
 {
   var day = document.getElementById('date').value;
+  $("#title").text("이벤트 별 성별 비율 데이터 및 연령대 데이터");
   $("#span_date").text(day);
   $.ajax({
-          url:"/admin/graph.php",
+          url:"https://mprclients.mprkorea.com/event/api/apicall_data.php",
           type :"post",
           data:{g_type:'column',
                 date: day},
           dataType :'json',
           success: function(data)
           {
+
             // if(data.length<5)
             // {
             //   $("#divtest").attr('class','col-6')
@@ -267,10 +269,9 @@ function chgdate()
             // }
             var tmp=[]
             var tmp_data=[]
-            // console.log(data);
             for(var i=0; i<data.length; i++)
             {
-              tmp.push([data[i]['ev_subject'],data[i]['cnt']]);
+              tmp.push([data[i]['event_nm'],data[i]['cnt']]);
             }
             google.charts.load("current", {packages:['corechart']});
             google.charts.setOnLoadCallback(drawChart);
@@ -290,27 +291,29 @@ function chgdate()
                   $("#add_date").text(day);
                   var selectitem= columnchart.getSelection()[0];
                   var value=data_C.getValue(selectitem.row,0);
-                  var key=""
-                  var name=""
+                  var event_nm="";
+                  var brand_nm="";
                   for(var i=0; i<data.length;i++)
                   {
-                    if(data[i]['ev_subject']==value)
+                    if(data[i]['event_nm']==value)
                     {
-                      key=data[i]['br_key'];
-                      name=data[i]['ev_subject']
+                      event_nm=data[i]['event_nm'];
+                      brand_nm=data[i]['cust_nm'];
                     }
                   }
                   // console.log(key);
                   $.ajax({
-                      url:"/admin/graph.php",
+                      url:"https://mprclients.mprkorea.com/event/api/apicall_data.php",
                       type :"post",
-                      data:{key:key,
+                      data:{key1:event_nm,
+                            key2:brand_nm,
                             date:day,
                             g_type:"rev_bar"
                       },
                       dataType :'json',
                       success: function(data)
                       {
+                        console.log(data);
                           var tmp=[]
                           for(var i=0; i<data.length; i++)
                           {
@@ -325,7 +328,7 @@ function chgdate()
                             data.addColumn('number', '개수');
                             data.addRows(tmp);
 
-                            var barchart_options = {title:'이벤트:'+name,
+                            var barchart_options = {title:'이벤트:'+event_nm,
                               width:380,
                               height:270,
                               legend: 'none'};
@@ -336,30 +339,32 @@ function chgdate()
                       },
                   });
                   $.ajax({
-                      url:"/admin/graph.php",
+                      url:"https://mprclients.mprkorea.com/event/api/apicall_data.php",
                       type :"post",
-                      data:{key:key,
+                      data:{key1:event_nm,
+                            key2:brand_nm,
                             date:day,
                             g_type:"pie"
                       },
                       dataType :'json',
                       success: function(data)
                       {
+                        
                         var tmp=[]
                         // var tmp_data=[]
                         for(var i=0; i<data.length; i++)
                         {
-                          tmp.push([data[i]['ev_sex'],data[i]['cnt']]);
+                          tmp.push([data[i]['gender'],data[i]['cnt']]);
                         }
                         google.charts.load('current', {'packages':['corechart']});
                         google.charts.setOnLoadCallback(drawChart);
                         function drawChart() {
                           var data = new google.visualization.DataTable();
-                          data.addColumn('string', 'ev_sex');
+                          data.addColumn('string', 'gender');
                           data.addColumn('number', '개수');
                           data.addRows(tmp);
 
-                          var piechart_options = {title:'이벤트:'+name,
+                          var piechart_options = {title:'이벤트:'+event_nm,
                             width:380,
                             height:270};
                           var piechart = new google.visualization.PieChart(document.getElementById('piechart_div'));
@@ -392,13 +397,17 @@ function gogo()
       dataType :'json',
       success: function(data)
         {
-          // console.log(data);
+          if(data[0]['ev_code']==null)
+          {
+            alert("해당하는 업체가 없습니다");
+            location.reload();
+          }
            var tmp = [];
           for(var i=0; i<data.length;i++)
           {
             tmp.push([data[i]['br_name'],data[i]['ev_subject'],new Date(data[i]['ev_start']),new Date(data[i]['ev_end'])]);
           }
-          // console.log(data);
+          console.log(data);
           google.charts.load("current", {packages:["timeline"]});
           google.charts.setOnLoadCallback(drawChart);
           function drawChart() {
@@ -424,26 +433,24 @@ function gogo()
                   {
                     if(data[i]['ev_subject']==value)
                     {
-                      key=data[i]['br_key'];
-                      name=data[i]['ev_subject']
+                      key=data[i]['ev_code'];
+                      name=data[i]['ev_subject'];
                     }
                   }
-                  console.log(key);
-                  console.log(name);
-            }
 
+            }
             google.visualization.events.addListener(chart, 'select', selectHandler);
           }
                 
         },
   });
 }
-
 var test= document.querySelectorAll('div[data-id="chart"]');
 for(var j=0; j<test.length;j++)
 {
   window.onload=call(test[j].dataset.type);
 }
+// window.onload=call();
 function call(type){
       // $("#disap").hide();
       // $("#divtest").attr('class','col-12')
@@ -457,12 +464,11 @@ function call(type){
       $("#add_date").text(document.getElementById('date').value);
       var asd= document.getElementById('date').value;
       $.ajax({
-              url:"/admin/graph.php",
+              url:"https://mprclients.mprkorea.com/event/api/apicall_data.php",
               type :"post",
-              async: false,
               data:{time:now,
-                    g_type: type,
-                    date:asd,
+                    g_type:type,
+                    date:asd
                   },
               dataType :'json',
                 success: function(data){
@@ -504,18 +510,20 @@ function call(type){
                     }
                     if(type=="pie")
                     {
+                      console.log(data);
                       var tmp=[]
                       // var tmp_data=[]
                       for(var i=0; i<data.length; i++)
                       {
-                        tmp.push([data[i]['ev_sex'],data[i]['cnt']]);
+                        tmp.push([data[i]['gender'],data[i]['cnt']]);
                       }
                       google.charts.load('current', {'packages':['corechart']});
                       google.charts.setOnLoadCallback(drawChart);
                       function drawChart() {
-                        var data = google.visualization.arrayToDataTable([
-                          ['sex','cnt'],tmp[0],tmp[1],tmp[2]
-                        ]);
+                        var data = new google.visualization.DataTable()
+                        data.addColumn('string', 'gender');
+                        data.addColumn('number', '비율');
+                        data.addRows(tmp);
 
                         var piechart_options = {title:'이벤트: TwTwiN(임시 고정값)',
                           width:380,
@@ -526,6 +534,7 @@ function call(type){
                     }
                     if(type=="rev_bar")
                     {
+                      
                       var tmp=[]
                       for(var i=0; i<data.length; i++)
                       {
@@ -562,11 +571,12 @@ function call(type){
                       // {
                       //   $("#divtest").attr('class','col-12')
                       // }
+
                       var tmp=[]
                       var tmp_data=[]
                       for(var i=0; i<data.length; i++)
                       {
-                        tmp.push([data[i]['ev_subject'],data[i]['cnt']]);
+                        tmp.push([data[i]['event_nm'],data[i]['cnt']]);
                       }
                       google.charts.load("visualization", "1.1", {packages:['corechart']});
                       google.charts.setOnLoadCallback(drawChart);

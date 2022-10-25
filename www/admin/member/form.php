@@ -73,7 +73,7 @@
 
                                       <div class="form-group">
                                       <label><input type="checkbox" id="level" name="level" onclick="doOpenCheck(this)" value="100">&nbsp일반고객&nbsp</label>
-                                        <label><input type="checkbox" id="level" name="level" onclick="doOpenCheck(this)" value="200">&nbsp관리고객</label>
+                                        <label><input type="checkbox" id="level" name="level" onclick="doOpenCheck(this)" value="200">&nbsp관리자</label>
                                       </div>
 
                                       <div class="form-group">
