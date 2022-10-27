@@ -97,7 +97,11 @@
                   {
                     location.href="/admin/";
                   }
-                  else
+                  else if(data==-1)
+                  {
+                    alert("승인되지 않은 아이디 입니다.");
+                  }
+                  else if($data==2)
                   {
                     alert("탈퇴한 회원입니다.");
                   }

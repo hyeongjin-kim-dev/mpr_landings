@@ -252,7 +252,7 @@
             }
         }).done(function(rs){	
             if($.trim(rs.result)){
-                setAlert('good', 'reload', '신청 완료!');
+                setAlert('good', 'reload', '신청 완료!'); 
             }
             else {
                 setAlert('bad', '', '신청에 실패하였습니다.');
