@@ -114,14 +114,10 @@ var code=$('#searchinput').val().trim();
 code=$('#brand_name [value="'+code+'"]').data('value');
 var test= document.querySelectorAll('div[data-id="chart"]');
 var type_arr=[];
-for(var j=0; j<test.length;j++)
-{
-  window.onload=call(test[j].dataset.type);
-  type_arr.push(test[j].dataset.type);
-}
 // console.log(code);
 // console.log("<?php echo $_SESSION['code'];?> ");
 var nm_arr=[];
+
 $(document).ready(function(){
   $.ajax({
     url:"https://mprclients.mprkorea.com/event/api/apicall_data.php",
@@ -171,311 +167,11 @@ $(document).ready(function(){
   });
 })
 
-
-
-function chgdate()
+for(var j=0; j<test.length;j++)
 {
-  var day = document.getElementById('date').value;
-  $("#title").text("이벤트 별 성별 비율 데이터 및 연령대 데이터");
-  $("#span_date").text(day);
-  $.ajax({
-          url:"https://mprclients.mprkorea.com/event/api/apicall_data.php",
-          type :"post",
-          data:{g_type:'column',
-                date: day,
-                session:<?php echo $_SESSION['lvl']?>},
-          dataType :'json',
-          success: function(data)
-          {
-            // console.log(data);
-            // if(data.length<5)
-            // {
-            //   $("#divtest").attr('class','col-6')
-            // }
-            // else
-            // {
-            //   $("#divtest").attr('class','col-12')
-            // }
-            var tmp=[]
-            var tmp_data=[]
-            for(var i=0; i<data.length; i++)
-            {
-              tmp.push([data[i]['event_nm'],data[i]['cnt']]);
-            }
-            google.charts.load("current", {packages:['corechart']});
-            google.charts.setOnLoadCallback(drawChart);
-            function drawChart(){
-               var data_C = new google.visualization.DataTable();
-               data_C.addColumn('string',"이벤트명");
-               data_C.addColumn('number','이벤트 수');
-               data_C.addRows(tmp);
-               var options = {
-               bar: {groupWidth: "50"},
-               legend: { position: "none" },
-               };
-               var columnchart = new google.visualization.ColumnChart(document.getElementById('columnchart'));
-               columnchart.draw(data_C, options);
-              //  var a = document.querySelectorAll("table div[data-id='chart']");
-               var selectHandler=function(type){
-                  $("#add_date").text(day);
-                  var selectitem= columnchart.getSelection()[0];
-                  var value=data_C.getValue(selectitem.row,0);
-                  var event_cd="";
-                  var event_nm="";
-                  for(var i=0; i<data.length;i++)
-                  {
-                    if(data[i]['event_nm']==value)
-                    {
-                      event_cd=data[i]['event_cd'];
-                      event_nm=data[i]['event_nm'];
-                    }
-                  }
-                  // console.log(key);
-                  $.ajax({
-                      url:"https://mprclients.mprkorea.com/event/api/apicall_data.php",
-                      type :"post",
-                      data:{key:event_cd,
-                            date:day,
-                            g_type:"rev_bar"
-                      },
-                      dataType :'json',
-                      success: function(data)
-                      {
-                          var tmp=[]
-                          for(var i=0; i<data.length; i++)
-                          {
-                            tmp.push([data[i]['age_range'],data[i]['cnt']]);
-                          }
-                          // console.log(tmp);
-                          google.charts.load('current', {'packages':['corechart']});
-                          google.charts.setOnLoadCallback(drawChart);
-                          function drawChart() {
-                            var data = new google.visualization.DataTable();
-                            data.addColumn('string', 'Age_range');
-                            data.addColumn('number', '개수');
-                            data.addRows(tmp);
-
-                            var barchart_options = {title:'이벤트:'+event_nm,
-                              width:380,
-                              height:270,
-                              legend: 'none'};
-                            var barchart = new google.visualization.BarChart(document.getElementById('barchart_div'));
-                            barchart.draw(data, barchart_options);
-                            }
-                        // console.log(data);
-                      },
-                  });
-                  $.ajax({
-                      url:"https://mprclients.mprkorea.com/event/api/apicall_data.php",
-                      type :"post",
-                      data:{key:event_cd,
-                            date:day,
-                            g_type:"pie"
-                      },
-                      dataType :'json',
-                      success: function(data)
-                      {
-                        
-                        var tmp=[]
-                        // var tmp_data=[]
-                        for(var i=0; i<data.length; i++)
-                        {
-                          tmp.push([data[i]['gender'],data[i]['cnt']]);
-                        }
-                        google.charts.load('current', {'packages':['corechart']});
-                        google.charts.setOnLoadCallback(drawChart);
-                        function drawChart() {
-                          var data = new google.visualization.DataTable();
-                          data.addColumn('string', 'gender');
-                          data.addColumn('number', '개수');
-                          data.addRows(tmp);
-
-                          var piechart_options = {title:'이벤트:'+event_nm,
-                            width:380,
-                            height:270};
-                          var piechart = new google.visualization.PieChart(document.getElementById('piechart_div'));
-                          piechart.draw(data, piechart_options);
-                          }
-                        // console.log(data);
-                      },
-                  });
-               }
-               google.visualization.events.addListener(columnchart, 'select', selectHandler);
-                                 
-            }
-          }
-  });
+  window.onload=call(test[j].dataset.type);
+  type_arr.push(test[j].dataset.type);
 }
-
-
-
-function search()
-{
-  console.log(type_arr.length);
-  var code=$('#searchinput').val().trim();
-  code=$('#brand_name [value="'+code+'"]').data('value');
-  console.log(code);
-  // $("#curve_chart").attr("id","time");
-  // $("#text_w").text("스케줄");
-  $.ajax({
-      url:"https://mprclients.mprkorea.com/event/api/apicall_data.php",
-      type :"post",
-      data:{code:code,
-        session:<?php echo $_SESSION['lvl']?>
-      },
-      dataType :'json',
-      success: function(data)
-        {
-          console.log("이게~" + data);
-          for(var i=0;i<type_arr.length;i++)
-          {
-            if(type_arr[i]=="curve")
-            {
-              var tmp = []
-              var tmp_data = []
-              for(var i=0; i<data.length;i++)
-              {
-                tmp_data.push(data[i]['cnt']);
-              }
-              const result = tmp_data.reduce(function add(sum, currValue) {
-                return sum + currValue;
-              }, 0);
-              const avg=result/tmp_data.length;
-              for(var i=0; i<data.length;i++)
-              {
-                tmp.push([data[i]['dates'],data[i]['cnt'],avg]);
-              }
-              // console.log(tmp[0]);
-              google.charts.load('current', {'packages':['corechart']});
-              google.charts.setOnLoadCallback(drawChart);
-              function drawChart() {
-              var data = new google.visualization.DataTable();
-              data.addColumn('string','날짜');
-              data.addColumn('number','갯수');
-              data.addColumn('number','평균')
-              data.addRows(tmp);
-              var options = {
-               // curveType: 'function',
-                legend: { position: 'bottom' }
-              };
-                  var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
-                  chart.draw(data, options);
-               }
-            }
-            else if(type_arr[i]=="pie")
-            {
-              // console.log(data);
-              var tmp=[]
-              var name=""
-              for(var i=0; i<data.length; i++)
-              {
-                tmp.push([data[i]['gender'],data[i]['cnt']]);
-                var name=data[i]['cust_nm'];
-              }
-              google.charts.load('current', {'packages':['corechart']});
-              google.charts.setOnLoadCallback(drawChart);
-              function drawChart() {
-                var data = new google.visualization.DataTable()
-                data.addColumn('string', 'gender');
-                data.addColumn('number', '비율');
-                data.addRows(tmp);
-                var piechart_options = {title:'이벤트:'+name,
-                          width:380,
-                          height:270};
-                var piechart = new google.visualization.PieChart(document.getElementById('piechart_div'));
-                piechart.draw(data, piechart_options);
-              }
-            }
-            else if(type_arr[i]=="rev_bar")
-            {
-             // console.log(data);
-              var tmp=[]
-              var name=""
-              for(var i=0; i<data.length; i++)
-              {
-                tmp.push([data[i]['age_range'],data[i]['cnt']]);
-                var name=data[i]['cust_nm'];
-              }
-                      // console.log(tmp);
-              google.charts.load('current', {'packages':['corechart']});
-              google.charts.setOnLoadCallback(drawChart);
-              function drawChart() {
-                  var data = new google.visualization.DataTable();
-                  data.addColumn('string', 'Age_range');
-                  data.addColumn('number', '개수');
-                  data.addRows(tmp);
-                  var options = {
-                      title: '이벤트 TwTwiN'
-                  };
-                  var barchart_options = {title:'이벤트:'+name,
-                          width:380,
-                          height:270,
-                          legend: 'none'};
-                  var barchart = new google.visualization.BarChart(document.getElementById('barchart_div'));
-                  barchart.draw(data, barchart_options);
-              }
-            }
-            else if(type_arr[i]=="column")
-            {
-                      // if(data.length<5)
-                      // {
-                      //   $("#divtest").attr('class','col-6')
-                      // }
-                      // else
-                      // {
-                      //   $("#divtest").attr('class','col-12')
-                      // }
-                      // console.log(data);
-              var tmp=[]
-              var tmp_data=[]
-              for(var i=0; i<data.length; i++)
-              {
-                tmp.push([data[i]['event_nm'],data[i]['cnt']]);
-              }
-              google.charts.load("visualization", "1.1", {packages:['corechart']});
-              google.charts.setOnLoadCallback(drawChart);
-              function drawChart(){
-                 var data_C = new google.visualization.DataTable();
-                 data_C.addColumn('string',"이벤트명");
-                 data_C.addColumn('number','이벤트 수');
-                 data_C.addRows(tmp);
-                 var options = {
-                        bar: {groupWidth: "50"},
-                        legend: { position: "none" },
-                 };
-                 var columnchart = new google.visualization.ColumnChart(document.getElementById('columnchart'));
-                 columnchart.draw(data_C, options);
-
-                        // var selectHandler=function(){
-                        //   // $("#divtest").attr('class','col-6');
-                        //   // $("#disap").show();
-                        // var selectitem= columnchart.getSelection()[0];
-                        // var value=data_C.getValue(selectitem.row,0);
-                        // var key=""
-                        // for(var i=0; i<data.length;i++)
-                        // {
-                        //   if(data[i]['ev_subject']==value)
-                        //   {
-                        //     key=data[i]['br_key'];
-                            
-                        //   }
-                        //   else
-                        //   {
-                        //     console.log("실패");
-                        //   }
-                        // }
-                        // console.log(selectitem);
-  
-                        // }
-                        // google.visualization.events.addListener(columnchart, 'select', selectHandler);           
-              }
-           }             
-          }
-        },
-  });
-}
-
-// window.onload=call();
 function call(type){
       // $("#disap").hide();
       // $("#divtest").attr('class','col-12')
@@ -650,7 +346,311 @@ function call(type){
                     }
                 }
             });
-      }
+}
+
+function chgdate()
+{
+  var day = document.getElementById('date').value;
+  $("#title").text("이벤트 별 성별 비율 데이터 및 연령대 데이터");
+  $("#span_date").text(day);
+  $.ajax({
+          url:"https://mprclients.mprkorea.com/event/api/apicall_data.php",
+          type :"post",
+          data:{g_type:'column',
+                date: day,
+                session:<?php echo $_SESSION['lvl']?>},
+          dataType :'json',
+          success: function(data)
+          {
+            // console.log(data);
+            // if(data.length<5)
+            // {
+            //   $("#divtest").attr('class','col-6')
+            // }
+            // else
+            // {
+            //   $("#divtest").attr('class','col-12')
+            // }
+            var tmp=[]
+            var tmp_data=[]
+            for(var i=0; i<data.length; i++)
+            {
+              tmp.push([data[i]['event_nm'],data[i]['cnt']]);
+            }
+            google.charts.load("current", {packages:['corechart']});
+            google.charts.setOnLoadCallback(drawChart);
+            function drawChart(){
+               var data_C = new google.visualization.DataTable();
+               data_C.addColumn('string',"이벤트명");
+               data_C.addColumn('number','이벤트 수');
+               data_C.addRows(tmp);
+               var options = {
+               bar: {groupWidth: "50"},
+               legend: { position: "none" },
+               };
+               var columnchart = new google.visualization.ColumnChart(document.getElementById('columnchart'));
+               columnchart.draw(data_C, options);
+              //  var a = document.querySelectorAll("table div[data-id='chart']");
+               var selectHandler=function(type){
+                  $("#add_date").text(day);
+                  var selectitem= columnchart.getSelection()[0];
+                  var value=data_C.getValue(selectitem.row,0);
+                  var event_cd="";
+                  var event_nm="";
+                  for(var i=0; i<data.length;i++)
+                  {
+                    if(data[i]['event_nm']==value)
+                    {
+                      event_cd=data[i]['event_cd'];
+                      event_nm=data[i]['event_nm'];
+                    }
+                  }
+                  // console.log(key);
+                  $.ajax({
+                      url:"https://mprclients.mprkorea.com/event/api/apicall_data.php",
+                      type :"post",
+                      data:{key:event_cd,
+                            date:day,
+                            g_type:"rev_bar"
+                      },
+                      dataType :'json',
+                      success: function(data)
+                      {
+                          var tmp=[]
+                          for(var i=0; i<data.length; i++)
+                          {
+                            tmp.push([data[i]['age_range'],data[i]['cnt']]);
+                          }
+                          // console.log(tmp);
+                          google.charts.load('current', {'packages':['corechart']});
+                          google.charts.setOnLoadCallback(drawChart);
+                          function drawChart() {
+                            var data = new google.visualization.DataTable();
+                            data.addColumn('string', 'Age_range');
+                            data.addColumn('number', '개수');
+                            data.addRows(tmp);
+
+                            var barchart_options = {title:'이벤트:'+event_nm,
+                              width:380,
+                              height:270,
+                              legend: 'none'};
+                            var barchart = new google.visualization.BarChart(document.getElementById('barchart_div'));
+                            barchart.draw(data, barchart_options);
+                            }
+                        // console.log(data);
+                      },
+                  });
+                  $.ajax({
+                      url:"https://mprclients.mprkorea.com/event/api/apicall_data.php",
+                      type :"post",
+                      data:{key:event_cd,
+                            date:day,
+                            g_type:"pie"
+                      },
+                      dataType :'json',
+                      success: function(data)
+                      {
+                        
+                        var tmp=[]
+                        // var tmp_data=[]
+                        for(var i=0; i<data.length; i++)
+                        {
+                          tmp.push([data[i]['gender'],data[i]['cnt']]);
+                        }
+                        google.charts.load('current', {'packages':['corechart']});
+                        google.charts.setOnLoadCallback(drawChart);
+                        function drawChart() {
+                          var data = new google.visualization.DataTable();
+                          data.addColumn('string', 'gender');
+                          data.addColumn('number', '개수');
+                          data.addRows(tmp);
+
+                          var piechart_options = {title:'이벤트:'+event_nm,
+                            width:380,
+                            height:270};
+                          var piechart = new google.visualization.PieChart(document.getElementById('piechart_div'));
+                          piechart.draw(data, piechart_options);
+                          }
+                        // console.log(data);
+                      },
+                  });
+               }
+               google.visualization.events.addListener(columnchart, 'select', selectHandler);
+                                 
+            }
+          }
+  });
+}
+
+
+
+function search()
+{
+  // console.log(type_arr);
+  // console.log(type_arr.length);
+  var code=$('#searchinput').val().trim();
+  code=$('#brand_name [value="'+code+'"]').data('value');
+  // console.log(code);
+  // $("#curve_chart").attr("id","time");
+  // $("#text_w").text("스케줄");
+    $.ajax({
+            url:"https://mprclients.mprkorea.com/event/api/apicall_data.php",
+            type :"post",
+            data:{code:code,
+                  session:<?php echo $_SESSION['lvl']?>,
+                   g_type:type_arr},
+            dataType :'text',
+        success: function(data)
+          {
+            console.log(data);
+            for(var i=0; i<type_arr.length;i++)
+            {
+              if(type_arr[i]=="curve")
+              {
+                // console.log(data);
+                var tmp = []
+                var tmp_data = []
+                for(var i=0; i<data.length;i++)
+                {
+                  tmp_data.push(data[i]['cnt']);
+                }
+                const result = tmp_data.reduce(function add(sum, currValue) {
+                  return sum + currValue;
+                }, 0);
+                const avg=result/tmp_data.length;
+                for(var i=0; i<data.length;i++)
+                {
+                  tmp.push([data[i]['dates'],data[i]['cnt'],avg]);
+                }
+                // console.log(tmp[0]);
+                google.charts.load('current', {'packages':['corechart']});
+                google.charts.setOnLoadCallback(drawChart);
+                function drawChart() {
+                var data = new google.visualization.DataTable();
+                data.addColumn('string','날짜');
+                data.addColumn('number','갯수');
+                data.addColumn('number','평균')
+                data.addRows(tmp);
+                var options = {
+                // curveType: 'function',
+                  legend: { position: 'bottom' }
+                };
+                    var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+                    chart.draw(data, options);
+                }
+              }
+              else if(type_arr[i]=="pie")
+              {
+                // console.log(data);
+                var tmp=[]
+                var name=""
+                for(var i=0; i<data.length; i++)
+                {
+                  tmp.push([data[i]['gender'],data[i]['cnt']]);
+                  var name=data[i]['cust_nm'];
+                }
+                google.charts.load('current', {'packages':['corechart']});
+                google.charts.setOnLoadCallback(drawChart);
+                function drawChart() {
+                  var data = new google.visualization.DataTable()
+                  data.addColumn('string', 'gender');
+                  data.addColumn('number', '비율');
+                  data.addRows(tmp);
+                  var piechart_options = {title:'이벤트:'+name,
+                            width:380,
+                            height:270};
+                  var piechart = new google.visualization.PieChart(document.getElementById('piechart_div'));
+                  piechart.draw(data, piechart_options);
+                }
+              }
+              else if(type_arr[i]=="rev_bar")
+              {
+              // console.log(data);
+                var tmp=[]
+                var name=""
+                for(var i=0; i<data.length; i++)
+                {
+                  tmp.push([data[i]['age_range'],data[i]['cnt']]);
+                  var name=data[i]['cust_nm'];
+                }
+                        // console.log(tmp);
+                google.charts.load('current', {'packages':['corechart']});
+                google.charts.setOnLoadCallback(drawChart);
+                function drawChart() {
+                    var data = new google.visualization.DataTable();
+                    data.addColumn('string', 'Age_range');
+                    data.addColumn('number', '개수');
+                    data.addRows(tmp);
+                    var options = {
+                        title: '이벤트 TwTwiN'
+                    };
+                    var barchart_options = {title:'이벤트:'+name,
+                            width:380,
+                            height:270,
+                            legend: 'none'};
+                    var barchart = new google.visualization.BarChart(document.getElementById('barchart_div'));
+                    barchart.draw(data, barchart_options);
+                }
+              }
+              else if(type_arr[i]=="column")
+              {
+                        // if(data.length<5)
+                        // {
+                        //   $("#divtest").attr('class','col-6')
+                        // }
+                        // else
+                        // {
+                        //   $("#divtest").attr('class','col-12')
+                        // }
+                        // console.log(data);
+                var tmp=[]
+                var tmp_data=[]
+                for(var i=0; i<data.length; i++)
+                {
+                  tmp.push([data[i]['event_nm'],data[i]['cnt']]);
+                }
+                google.charts.load("visualization", "1.1", {packages:['corechart']});
+                google.charts.setOnLoadCallback(drawChart);
+                function drawChart(){
+                  var data_C = new google.visualization.DataTable();
+                  data_C.addColumn('string',"이벤트명");
+                  data_C.addColumn('number','이벤트 수');
+                  data_C.addRows(tmp);
+                  var options = {
+                          bar: {groupWidth: "50"},
+                          legend: { position: "none" },
+                  };
+                  var columnchart = new google.visualization.ColumnChart(document.getElementById('columnchart'));
+                  columnchart.draw(data_C, options);
+
+                          // var selectHandler=function(){
+                          //   // $("#divtest").attr('class','col-6');
+                          //   // $("#disap").show();
+                          // var selectitem= columnchart.getSelection()[0];
+                          // var value=data_C.getValue(selectitem.row,0);
+                          // var key=""
+                          // for(var i=0; i<data.length;i++)
+                          // {
+                          //   if(data[i]['ev_subject']==value)
+                          //   {
+                          //     key=data[i]['br_key'];
+                              
+                          //   }
+                          //   else
+                          //   {
+                          //     console.log("실패");
+                          //   }
+                          // }
+                          // console.log(selectitem);
+    
+                          // }
+                          // google.visualization.events.addListener(columnchart, 'select', selectHandler);           
+                }
+            }          
+            }   
+          },
+    });
+}
 </script>
 <?php
     include_once trim($_SERVER['DOCUMENT_ROOT'])."/admin/tail.php";

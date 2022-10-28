@@ -223,15 +223,6 @@
                                             </div>
                                         </form>
                                     </div>
-                                    <div class="card card-primary" id="ev_stat_a" style="width:30%;">
-                                        <form method="POST" id="branch-form">
-                                            <div class="card-body">
-                                                <div class="form-group">
-                                                <div id="map" style="width:100%; min-height: 29vh;"></div>
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -262,43 +253,8 @@
 </div>
 
 <!-- 주소 찾기 -->
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAqbwCkqqEzEY0xEzIu-ihiJLBlegyHM0I&callback=initMap&region=kr"></script>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
-
-function initMap()
-{
-    var map = new google.maps.Map(
-        document.getElementById('map'), {
-        zoom: 18,
-        panControl: false,
-            zoomControl: false,
-            mapTypeControl: false,
-            scaleControl: false,
-            streetViewControl: false,
-            overviewMapControl: false,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-    });
-    var address = '<?php echo $res['br_addr'];?>' // DB에서 주소 가져와서 검색하거나 왼쪽과 같이 주소를 바로 코딩 
-    var marker = null;
-    var geocoder = new google.maps.Geocoder();
-    geocoder.geocode( { 'address': address}, function(results, status) { // 주소값 입력 받은 후 경도 위도 변환해서 지도에 찍어주기!!!
-    if (status == google.maps.GeocoderStatus.OK) {
-        map.setCenter(results[0].geometry.location);
-        marker = new google.maps.Marker({
-        map: map,
-    // icon: image, // 마커로 사용할 이미지(변수)                                
-        title:'<?php echo $res['br_name']?>', // 마커에 마우스 포인트를 갖다댔을 때 뜨는 타이틀                                
-        position: results[0].geometry.location});
-        var content = "엠피알<br/><br/>Tel: 1644-9435"; // 말풍선 안에 들어갈 내용                             // 마커를 클릭했을 때의 이벤트. 말풍선 뿅~                
-        var infowindow = new google.maps.InfoWindow({ content: content});
-        infowindow.open(map,marker);
-        // google.maps.event.addListener(marker, "click", function() {;}); // 클릭시 이벤트 넘기기
-        } else {
-            alert("Geocode was not successful for the following reason: " + status);
-        }
-    });
-}
     function address_search() {
         new daum.Postcode({
             oncomplete: function(data) {
