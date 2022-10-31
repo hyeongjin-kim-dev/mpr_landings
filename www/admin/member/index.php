@@ -159,7 +159,7 @@
                                                 $strWhere = "del_yn='N' AND {$category} like '%{$search}%'";
                                             }
                                         
-                                            $cnt = $DB->single("SELECT count(*) FROM mpr_member WHERE {$strWhere}");
+                                            $cnt = $DB->single("SELECT count(*) FROM mpr_member WHERE {$strWhere} and user_lv !=300");
 
                                             if($cnt==0){
                                                 echo    "<tr class='odd'>
@@ -185,12 +185,11 @@
                                                     "SELECT 
                                                         user_id, user_nm, user_nick, user_lv, user_mobile,user_email, apprve 
                                                     FROM mpr_member 
-                                                    WHERE {$strWhere}
+                                                    WHERE {$strWhere} and user_lv !=300
                                                     ORDER BY {$orderBy} limit $start, $list";
 
                                                 $result=$DB->query($sql2);
                                                 $max = $cnt-$list*($page-1);
-
                                                 for($i=0; $i < count($result); $i++){
                                         ?>
                                                         <tr class="odd">

@@ -7,7 +7,7 @@
           <div class="container-fluid">
               <h2 class="text-center display-4">HOME</h2>
               <div class="row">
-                  <div class="col-md-8 offset-md-2">
+                  <!-- <div class="col-md-8 offset-md-2">
                       <form>
                           <div class="input-group">
                             <?php if($_SESSION['lvl']==300){ ?>
@@ -26,7 +26,7 @@
                               </div>
                           </div>
                       </form>
-                  </div>
+                  </div> -->
               </div>
           </div>
   </section>
@@ -110,62 +110,62 @@
         </div>     
 </div>
 <script>
-var code=$('#searchinput').val().trim();
-code=$('#brand_name [value="'+code+'"]').data('value');
+// var code=$('#searchinput').val().trim();
+// code=$('#brand_name [value="'+code+'"]').data('value');
 var test= document.querySelectorAll('div[data-id="chart"]');
 var type_arr=[];
 // console.log(code);
 // console.log("<?php echo $_SESSION['code'];?> ");
 var nm_arr=[];
 
-$(document).ready(function(){
-  $.ajax({
-    url:"https://mprclients.mprkorea.com/event/api/apicall_data.php",
-    type:"post",
-    data:{test:"test",
-      session:<?php echo $_SESSION['lvl']?>},
-    dataType:"json",
-    success: function(data)
-    {
-      // console.log(data)
-      var datalist = document.getElementById('brand_name');
-      if(<?php echo $_SESSION['lvl'] ?>==300)
-      {
-        for(var i=0; i<data.length; i++)
-        {
-          nm_arr.push(data[i]['cust_nm']);
-        }
-        var nm=Array.from(new Set(nm_arr));
-        for(var i=0; i<nm.length; i++)
-        {
-          var option=document.createElement('option');
-          option.setAttribute('id','brand');
-          option.setAttribute('data-value',nm[i]);
-          option.setAttribute('value',nm[i]);
-          datalist.appendChild(option);
-        }
-      }
-      else
-      {
-        for(var i=0; i<data.length; i++)
-        {
-          nm_arr.push(data[i]['event_nm']);
-        }
-        var nm=Array.from(new Set(nm_arr));
-        for(var i=0; i<nm.length; i++)
-        {
-          var option=document.createElement('option');
-          option.setAttribute('id','brand');
-          option.setAttribute('data-value',nm[i]);
-          option.setAttribute('value',nm[i]);
-          datalist.appendChild(option);
-        }
-      }
-    },
-    error : function(request, status, error) { 
-      console.log(error)}
-  });
-})
+// $(document).ready(function(){
+//   $.ajax({
+//     url:"https://mprclients.mprkorea.com/event/api/apicall_data.php",
+//     type:"post",
+//     data:{test:"test",
+//       session:<?php echo $_SESSION['lvl']?>},
+//     dataType:"json",
+//     success: function(data)
+//     {
+//       // console.log(data)
+//       var datalist = document.getElementById('brand_name');
+//       if(<?php echo $_SESSION['lvl'] ?>==300)
+//       {
+//         for(var i=0; i<data.length; i++)
+//         {
+//           nm_arr.push(data[i]['cust_nm']);
+//         }
+//         var nm=Array.from(new Set(nm_arr));
+//         for(var i=0; i<nm.length; i++)
+//         {
+//           var option=document.createElement('option');
+//           option.setAttribute('id','brand');
+//           option.setAttribute('data-value',nm[i]);
+//           option.setAttribute('value',nm[i]);
+//           datalist.appendChild(option);
+//         }
+//       }
+//       else
+//       {
+//         for(var i=0; i<data.length; i++)
+//         {
+//           nm_arr.push(data[i]['event_nm']);
+//         }
+//         var nm=Array.from(new Set(nm_arr));
+//         for(var i=0; i<nm.length; i++)
+//         {
+//           var option=document.createElement('option');
+//           option.setAttribute('id','brand');
+//           option.setAttribute('data-value',nm[i]);
+//           option.setAttribute('value',nm[i]);
+//           datalist.appendChild(option);
+//         }
+//       }
+//     },
+//     error : function(request, status, error) { 
+//       console.log(error)}
+//   });
+// })
 
 for(var j=0; j<test.length;j++)
 {

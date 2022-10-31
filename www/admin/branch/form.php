@@ -2,8 +2,11 @@
     include_once trim($_SERVER['DOCUMENT_ROOT'])."/admin/head.php";
 ?>
 
-<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+<style>
+    :focus-visible{
+        outline: none;
+    }
+</style>
 <!-- 업체 코드 랜덤 발급 -->
 <?php
     $chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -23,15 +26,16 @@
         $code = $res['br_code'];
         $userID = $res['user_id'];
 ?>
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script>
-       
         window.onload = function(){
             
             $('#update_btn').show();
             $('#delete_btn').show();
             $('#ev_stat_a').show();
-
+            $('#reg_map').hide();
+            $('#up_map').show();
+            $('#code_Addr').css("float","none")
+            initMap("upMap", "<?php echo $res['br_name']?>");
 
             $('#register_div').css("width", "68%");
             $('#register_div').css("float", "left");
@@ -41,6 +45,7 @@
             $(".userId_div").append("<label for='in_UserID'>업체 아이디 *</label>");
             $(".userId_div").append("<input type='text' class='form-control' id='in_UserID' value='<?php echo $userID?>' disabled>");
             $(".userId_div").css("margin-right", "10px")
+            
         }
 
 
@@ -48,7 +53,7 @@
 <?php
     }else{
 
-        $code = $random_str;    // 업체 코드
+        $code = $random_str;    // 업체 코드 랜덤 생성
 
         $userlvSQL = "SELECT user_lv FROM mpr_member WHERE user_id = '{$_SESSION['userId']}' AND del_yn='N'";
         $res = $DB->row($userlvSQL);
@@ -68,17 +73,18 @@
 ?>
             <script>
                 $(function(){
-                    $(".userId_div").css("width", "10%");
+                    $(".userId_div").css("width", "20%");
                     $(".userId_div").css("margin-right", "10px");
-                    $(".brCode_div").css("width", "10%");
+                    $(".brCode_div").css("width", "20%");
                     $(".userId_div").append("<?php echo $options?>");
+
+                    $('#up_map').hide();
+                    initMap("regMap","MPR");
                 });
             </script>
 <?php
         }
-        
     }
-
 ?>
 
 <div class="content-wrapper">
@@ -108,41 +114,49 @@
                                                 <div class="form-group">
                                                     <label for="br_name">업체명 *</label>
                                                     <input type="text" class="form-control" id="br_name" name="br_name" placeholder="업체명을 입력하세요" autocomplete='off' value="<?php echo $res['br_name']?>" style="display:block">
-                                                    
                                                 </div>
                                                 <!-- 업체 코드 -->
-                                                <div class="form-group d-flex">
-                                                    <div class="userId_div">
-                                                    </div>
-                                                    <div class="brCode_div">
-                                                        <label for="br_code">업체 코드 *</label>
-                                                        <input type="text" class="form-control" id="br_code" name="br_code" value="<?php echo $code;?>" disabled>
-                                                    </div>
-                                                </div>
-                                                <!-- 주소 -->
-                                                <div class="form-group">
-                                                    <div class="row">
-                                                        <label for="event-form-table">주소</label>
-                                                        <div class="input-group col-3">
-                                                            <input type="text" class="form-control" id="zip_code" name="zip_code"  value="<?php echo $res['br_post']?>" placeholder="우편 번호">
-                                                            <span class="input-group-append">
-                                                                <button type="button" class="btn btn-block btn-info" onclick="address_search()">search</button>
-                                                            </span>
+                                                <div id="code_Addr" style="width : 60%; float:left; margin-right : 20px;">
+                                                    <div class="form-group d-flex">
+                                                        <div class="userId_div">
+                                                        </div>
+                                                        <div class="brCode_div">
+                                                            <label for="br_code">업체 코드 *</label>
+                                                            <input type="text" class="form-control" id="br_code" name="br_code" value="<?php echo $code;?>" disabled>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <div class="row">
-                                                        <div class="col-4">
-                                                            <input type="text" class="form-control" id="address" name="address" value="<?php echo $res['br_addr']?>" placeholder="주소">
-                                                        </div>
-                                                        <div class="col-5">
-                                                            <input type="text" class="form-control" id="detail_address" name="detail_address" placeholder="상세 주소">
+                                                    <!-- 주소 -->
+                                                    <div class="form-group">
+                                                        <div class="row">
+                                                            <label for="event-form-table">주소</label>
+                                                            <div class="input-group col-4">
+                                                                <input type="text" class="form-control" id="zip_code" name="zip_code"  value="<?php echo $res['br_post']?>" placeholder="우편 번호">
+                                                                <span class="input-group-append">
+                                                                    <button type="button" class="btn btn-block btn-info" onclick="address_search()">search</button>
+                                                                </span>
+                                                            </div>
                                                         </div>
                                                     </div>
+                                                    <div class="form-group">
+                                                        <div class="row">
+                                                            <div class="col-4">
+                                                                <input type="text" class="form-control" id="address" name="address" value="<?php echo $res['br_addr']?>" placeholder="주소">
+                                                            </div>
+                                                            <div class="col-5">
+                                                                <input type="text" class="form-control" id="detail_address" name="detail_address" placeholder="상세 주소">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <input type="text" class="form-control" id="reference" value="<?php echo $res['br_addr_etc']?>" placeholder="참고항목" autocomplete='off'>
+                                                    </div>
                                                 </div>
-                                                <div class="form-group">
-                                                    <input type="text" class="form-control" id="reference" value="<?php echo $res['br_addr_etc']?>" placeholder="참고항목" autocomplete='off'>
+                                                <div class="card" id="reg_map">
+                                                    <div class="card-body">
+                                                        <div class="form-group" style="margin:0px">
+                                                            <div id="regMap" style="width:100%; min-height: 25vh;"></div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                                 <!-- 전화번호 -->
                                                 <div class="form-group">
@@ -163,8 +177,7 @@
                                             </div>
                                         </form>
                                     </div>
-
-                                    <div class="card card-primary" id="ev_stat_a" style="width:30%; display:none;">
+                                    <div class="card card-primary" id="ev_stat_a" style="display:none;">
                                         <form method="POST" id="branch-form">
                                             <div class="card-body">
                                                 <div class="form-group">
@@ -223,11 +236,11 @@
                                             </div>
                                         </form>
                                     </div>
-                                    <div class="card card-primary" id="ev_stat_a" style="width:30%;">
+                                    <div class="card" style="margin:0px; display:none;" id="up_map">
                                         <form method="POST" id="branch-form">
                                             <div class="card-body">
-                                                <div class="form-group">
-                                                <div id="map" style="width:100%; min-height: 29vh;"></div>
+                                                <div class="form-group" style="margin:0px">
+                                                    <div id="upMap" style="width:100%; min-height: 30vh;"></div>
                                                 </div>
                                             </div>
                                         </form>
@@ -253,63 +266,64 @@
                         <button type="button" class="btn btn-info" onclick="modal_close();">Close</button>
                     </div>
                 </div>
-                <!-- /.modal-content -->
             </div>
-            <!-- /.modal-dialog -->
         </div>
     </section>
     
 </div>
 
-<!-- 주소 찾기 -->
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAqbwCkqqEzEY0xEzIu-ihiJLBlegyHM0I&callback=initMap&region=kr"></script>
+<!-- 주소 -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAqbwCkqqEzEY0xEzIu-ihiJLBlegyHM0I"></script>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
 
-function initMap()
-{
-    var map = new google.maps.Map(
-        document.getElementById('map'), {
-        zoom: 18,
-        panControl: false,
+    /* 구글 맵 API */
+    function initMap(id, brName) {
+        var map = new google.maps.Map(document.getElementById(id), {
+            zoom: 18,
+            panControl: false,
             zoomControl: false,
             mapTypeControl: false,
             scaleControl: false,
             streetViewControl: false,
             overviewMapControl: false,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-    });
-    var address = '<?php echo $res['br_addr'];?>' // DB에서 주소 가져와서 검색하거나 왼쪽과 같이 주소를 바로 코딩 
-    var marker = null;
-    var geocoder = new google.maps.Geocoder();
-    geocoder.geocode( { 'address': address}, function(results, status) { // 주소값 입력 받은 후 경도 위도 변환해서 지도에 찍어주기!!!
-    if (status == google.maps.GeocoderStatus.OK) {
-        map.setCenter(results[0].geometry.location);
-        marker = new google.maps.Marker({
-        map: map,
-    // icon: image, // 마커로 사용할 이미지(변수)                                
-        title:'<?php echo $res['br_name']?>', // 마커에 마우스 포인트를 갖다댔을 때 뜨는 타이틀                                
-        position: results[0].geometry.location});
-        var content = "엠피알<br/><br/>Tel: 1644-9435"; // 말풍선 안에 들어갈 내용                             // 마커를 클릭했을 때의 이벤트. 말풍선 뿅~                
-        var infowindow = new google.maps.InfoWindow({ content: content});
-        infowindow.open(map,marker);
-        // google.maps.event.addListener(marker, "click", function() {;}); // 클릭시 이벤트 넘기기
-        } else {
-            alert("Geocode was not successful for the following reason: " + status);
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        });
+
+        var address = $("#address").val();                                  // DB에서 주소 가져와서 검색하거나 왼쪽과 같이 주소를 바로 코딩 
+        if(!address.trim()){
+            address = "부산 수영구 광남로 211";
         }
-    });
-}
+        var marker = null;
+        var geocoder = new google.maps.Geocoder();
+        geocoder.geocode( {'address': address}, function(results, status) { // 주소값 입력 받은 후 경도 위도 변환해서 지도에 찍어주기
+        if (status == google.maps.GeocoderStatus.OK) {
+            map.setCenter(results[0].geometry.location);
+            marker = new google.maps.Marker({
+                map : map,
+                title : brName,                                             // 마커에 마우스 포인트를 갖다댔을 때 뜨는 타이틀 
+                position: results[0].geometry.location});
+                var content = "<a href='https://www.google.com/maps/search/?api=1&query="+results[0].geometry.location.lat()+","+results[0].geometry.location.lng()+"&z=19'>"+brName+"</a>";  // 말풍선 안에 들어갈 내용 클릭시 구글 길찾기로 이동          
+                var infowindow = new google.maps.InfoWindow({content: content});
+                infowindow.open(map,marker);
+            } else {
+                alert("Geocode was not successful for the following reason: " + status);
+            }
+        });
+    }
+
+    /* 주소 찾기 API */
     function address_search() {
         new daum.Postcode({
             oncomplete: function(data) {
                 
-                var addr = ''; // 주소 변수
+                var addr = '';      // 주소 변수
                 var extraAddr = ''; // 참고항목 변수
                 
                 //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
-                if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                if (data.userSelectedType === 'R') {            // 사용자가 도로명 주소를 선택했을 경우
                     addr = data.roadAddress;
-                } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                } else {                                        // 사용자가 지번 주소를 선택했을 경우(J)
                     addr = data.jibunAddress;
                 }
         
@@ -338,14 +352,18 @@ function initMap()
                 // 우편번호와 주소 정보를 해당 필드에 넣는다.
                 document.getElementById('zip_code').value = data.zonecode;
                 document.getElementById("address").value = addr;
+                var mode = '<?php echo $_GET['mode']?>';
+                if( mode == 'register' ){
+                    initMap("regMap", $("#br_name").val());
+                }else{
+                    initMap("upMap", $("#br_name").val())
+                }
                 // 커서를 상세주소 필드로 이동한다.
                 document.getElementById("detail_address").focus();
             }
         }).open();
     }
-</script>
-<script>
-    
+
     /* autoHyphen */
     const autoHyphen = (target) => {
         target.value = target.value.replace(/[^0-9]/g, '').replace(/^(\d{2,3})(\d{3,4})(\d{4})$/, `$1-$2-$3`);
