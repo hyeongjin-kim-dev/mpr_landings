@@ -3,8 +3,8 @@
 
     /* 검색 정보 */
     if(count($_POST)>0){    // 검색했을 때
-        $keyword = $_POST['input_search'];                      // 검색어
-        $list = $_POST['lines'];                                // 페이지당 조회 건수
+        $keyword = $_POST['input_search'];  // 검색어
+        $list = $_POST['lines'];            // 페이지당 조회 건수
     }else{                  // 검색 안했을 때
         $list = 10;
     }
@@ -59,7 +59,7 @@
                                                 <th class="sorting sorting_asc" aria-controls="client-list">번호</th>
                                                 <th class="sorting sorting_asc" aria-controls="client-list">업체</th>
                                                 <th class="sorting sorting_asc" aria-controls="client-list">업체 코드</th>
-                                                <th class="sorting sorting_asc" aria-controls="client-list">아이디</th>
+                                                <th class="sorting sorting_asc" aria-controls="client-list">회원 ID</th>
                                                 <th class="sorting sorting_asc" aria-controls="client-list">등록 이벤트</th>
                                             </tr>
                                         </thead>
@@ -95,7 +95,7 @@
                                                 if($row_num == 0){
                                                     echo "<tr>
                                                                 <td>&nbsp;</td>
-                                                                <td colspan='2'>검색결과가 없습니다.</td>
+                                                                <td colspan='4'>검색결과가 없습니다.</td>
                                                             </tr>";
                                                     $total_page=0;
                                                 }else{
