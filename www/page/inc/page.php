@@ -1,4 +1,5 @@
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script type="text/javascript" src="https://unpkg.com/youtube-background/jquery.youtube-background.min.js"></script>
 <script>
 
     // 태그 제거
@@ -167,10 +168,11 @@
         let reqLeng = $('[data-req*="required"]').length;
         let statLeng = $('[data-stat="true"]').length;
 
-        if(reqLeng == statLeng){
-            $('form#landing .button-row button').attr('disabled', false);
+        if(reqLeng != 0){
+            if(reqLeng == statLeng){
+                $('form#landing .button-row button').attr('disabled', false);
+            }
         }
-
     }
 
     // 유효성 통과 처리
@@ -287,6 +289,7 @@
                 let type = pv.ev_type;
                 let title = pv.ev_subject;
                 let isAlways = pv.ev_always;
+                let themeColor = pv.ev_color;
                 let evStat = pv.ev_stat;
                 let sdate = dateFormatter(pv.ev_start);
                 let edate = dateFormatter(pv.ev_end);
@@ -316,6 +319,10 @@
                 }
 
                 $('.event-dates').text(ev_dates);
+
+                if(themeColor){
+                    $('#landing').css('background', themeColor);
+                }
 
                 // 기본형 폼 설정
                 if(type == 'F'){
@@ -393,6 +400,20 @@
                             }
                         }
                     }
+
+                    if($('.note-video-clip')){
+                        let vSec = $('.note-video-clip');
+                        for(let v = 0 ; v < vSec.length ; v++){
+                            vSec.eq(v).hide();
+                            let vId     =   vSec.eq(v).attr('src');
+                                vId     =   vId.split('/');
+                                vId     =   vId[vId.length - 1];
+                            let vUrl    =   '<div class="vclip" data-vbg="https://youtu.be/'+vId+'"></div>';
+                                vSec.eq(v).after(vUrl);
+                            $('[data-vbg]').youtube_background();
+                        }
+                    }
+                    
                 }
                 else if(type == 'M'){
                     let cont = pv.ev_content;

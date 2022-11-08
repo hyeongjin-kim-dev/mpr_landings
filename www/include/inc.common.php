@@ -5,6 +5,7 @@ include_once trim($_SERVER['DOCUMENT_ROOT'])."/include/class/Bases.class.php";
 include_once trim($_SERVER['DOCUMENT_ROOT'])."/include/class/sms.class.php";
 include_once trim($_SERVER['DOCUMENT_ROOT'])."/include/class/coin.class.php";
 include_once trim($_SERVER['DOCUMENT_ROOT'])."/include/class/Rsa.class.php";
+define('_KEY'       , 'buruMountainChoiHoya');
 
 //자동로그인 처리
 
